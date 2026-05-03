@@ -10,7 +10,6 @@ def add_student():
         "marks": marks})
     
 #display students
-
 def view_student():
     for s in students:
         print(s)
