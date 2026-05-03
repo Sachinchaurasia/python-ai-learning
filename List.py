@@ -1,11 +1,11 @@
-# marks=[94.3,43,67,88,90,65.5]
-# print(marks)
+# # marks=[94.3,43,67,88,90,65.5]
+# # print(marks)
 
-# print(type(marks))
-# print(len(marks))
+# # print(type(marks))
+# # print(len(marks))
 
-# student=["sachin",75,23,"Delhi"]
-# print(student)
+# # student=["sachin",75,23,"Delhi"]
+# # print(student)
 
 
 # list=["banana","litchi","Apple"]
@@ -18,9 +18,9 @@
 # list.reverse()
 # print(list)
 
-# list.insert(2,"gvava 6")
+# # list.insert(2,"gvava 6")
 
-# print(list)
+# # print(list)
 
 # list.remove(4)
 # print(list)

@@ -5,10 +5,11 @@
 # }
 # print(dictionary)
 
-# set={
-#     "python","java","C++","python","javascript","java","C++","C"
-# }
-# print(len(set))
+set={
+    "python","java","C++","python","javascript","java","C++","C"
+}
+print(len(set))
+
 
 
 # marks={
@@ -94,7 +95,7 @@
 #     reverse=reverse*10+digit
 #     nums//=10
 
-# print("rverse number is ",reverse)
+# print("reverse number is ",reverse)
     
     
 # pallindrome number....
