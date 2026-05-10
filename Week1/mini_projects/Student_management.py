@@ -11,7 +11,7 @@ def add_student():
     
 #display students
 def view_student():
-    for s in students:
+    for s in students: 
         print(s)
         
 #search students

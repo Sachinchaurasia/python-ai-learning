@@ -204,7 +204,7 @@ str1="This is a string. \n we are creating it in python"
 # else:
 #     print("Invalid number")
         
-        
+         
 #WAP for Temperature Converter
 # temp_c=int(input("enter the temperature in celsius"))
 # temp_f=(temp_c*9/5)+32

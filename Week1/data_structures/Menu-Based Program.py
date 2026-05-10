@@ -45,7 +45,7 @@ if choice==1:
     print("Prime" if is_prime(num) else "Not Prime")
 elif choice==2:
     n=int(input("enter the number of terms for fibonaccii series"))
-    fibonacci(n)
+    fibonacci(n) 
 elif choice==3:
     num=int(input("enter a number to reverse"))
     print("reverse number is:",reverse_number(num))
