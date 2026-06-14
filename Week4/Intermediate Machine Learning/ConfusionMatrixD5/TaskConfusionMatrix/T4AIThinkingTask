@@ -1,0 +1,101 @@
+ <!-- TASK 4 — AI THINKING TASK
+Why is Accuracy Alone Not Enough?
+
+Accuracy tells us the percentage of correct predictions, but it does not tell us what kind of mistakes the model is making.
+
+A model can have high accuracy and still be useless in important real-world situations.
+
+1. Fraud Detection
+
+Suppose a bank has:
+
+1000 transactions
+990 Genuine
+10 Fraud
+
+If a model predicts:
+
+Every transaction = Genuine
+
+Accuracy:
+
+1000
+990
+	​
+
+=99%
+
+The accuracy is 99%, which looks excellent.
+
+But the model failed to detect all 10 fraud transactions.
+
+For a bank, this model is not useful despite its high accuracy.
+
+2. Medical Diagnosis
+
+Imagine a disease screening test:
+
+100 patients
+95 Healthy
+5 Sick
+
+If the model predicts:
+
+Everyone = Healthy
+
+Accuracy:
+
+95%
+
+However, all 5 sick patients are missed.
+
+In healthcare, missing a sick patient (False Negative) can be very serious, so accuracy alone is not enough.
+
+3. Imbalanced Datasets
+
+Many real-world datasets are imbalanced.
+
+Example:
+
+99% Normal Cases
+1% Important Cases
+
+Examples:
+
+Fraud Detection
+Cancer Detection
+Network Intrusion Detection
+
+A model can achieve very high accuracy simply by predicting the majority class every time.
+
+Therefore accuracy can be misleading.
+
+4. Different Error Types Matter
+
+A confusion matrix shows:
+
+True Positive (TP)
+True Negative (TN)
+False Positive (FP)
+False Negative (FN)
+
+Different mistakes have different costs.
+
+Fraud Detection
+False Negative = Fraud not detected
+
+Very costly.
+
+Medical Diagnosis
+False Negative = Sick patient predicted healthy
+
+Potentially dangerous.
+
+Email Spam Filter
+False Positive = Important email marked as spam
+
+Can cause users to miss important messages.
+
+Interview Answer
+
+Accuracy alone is not enough because it only tells us how many predictions are correct. In problems such as fraud detection, medical diagnosis, and other imbalanced datasets, a model can achieve high accuracy while still making critical mistakes. Metrics such as precision, recall, F1-score, and the confusion matrix help us understand the types of errors and evaluate the model more effectively -->
