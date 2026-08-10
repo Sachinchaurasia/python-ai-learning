@@ -420,4 +420,294 @@ model=tf.keras.Sequential([
 # Input vs Hidden	Input receives features; hidden layers learn patterns
 # Multiple neurons	Different neurons can learn different patterns
 # Tensor	A structure for storing numerical data in multiple dimensions
-# Dense(16)	A fully connected layer containing 16 neurons
+# # Dense(16)	A fully connected layer containing 16 neurons
+
+
+
+# Think of a neural network like a team of workers. Each worker (neuron) receives information, processes it, and passes the result to the next group.
+
+# 1. Sequential
+# What is it?
+
+# Sequential means:
+
+# Build the neural network layer-by-layer in a simple sequence.
+
+# For example:
+
+# from tensorflow.keras.models import Sequential
+# from tensorflow.keras.layers import Dense
+
+# model = Sequential([
+#     Dense(16, activation="relu"),
+#     Dense(8, activation="relu"),
+#     Dense(1, activation="sigmoid")
+# ])
+
+# Think:
+
+# Input
+#   ↓
+# Layer 1
+#   ↓
+# Layer 2
+#   ↓
+# Output
+
+# So Sequential is basically the container that holds your layers in order.
+
+# Easy memory trick
+
+# Sequential = One layer after another
+
+# 2. Dense
+
+# Dense represents a fully connected neural-network layer.
+
+# Example:
+
+# Dense(16)
+
+# means:
+
+# Create a layer containing 16 neurons.
+
+# Imagine:
+
+#        Neuron 1
+#       /
+# Input → Neuron 2
+#       \
+#        Neuron 3
+#         ...
+#        Neuron 16
+
+# Each neuron is connected to the neurons in the previous layer.
+
+# For example:
+
+# model = Sequential([
+#     Dense(16, activation="relu")
+# ])
+
+# means:
+
+# Input
+#   ↓
+# [ 16 Neurons ]
+# Important
+
+# Dense(16) does not mean 16 inputs.
+
+# It means:
+
+# 16 neurons in that layer.
+
+# 3. activation
+
+# An activation function decides how strongly a neuron should pass its output to the next layer.
+
+# You will commonly see:
+
+# Dense(16, activation="relu")
+
+# Here:
+
+# Dense(16)
+#      ↓
+# 16 neurons
+#      ↓
+# activation="relu"
+#      ↓
+# ReLU applied to their outputs
+
+# Why do we need activation functions?
+
+# Without activation functions, even a network with many layers would behave much like a simple linear calculation.
+
+# Activation functions allow neural networks to learn complex/non-linear patterns.
+
+# Think of activation as a decision/filter mechanism:
+
+# Neuron calculates something
+#           ↓
+#      Activation
+#           ↓
+#  How much should pass?
+#           ↓
+#       Next layer
+# 4. ReLU
+
+# ReLU means:
+
+# Rectified Linear Unit
+
+# Its basic behavior is very simple:
+
+# negative value → 0
+# positive value → stays positive
+
+# For example:
+
+# Input     ReLU output
+
+#  -5   →      0
+#  -2   →      0
+#   0   →      0
+#   3   →      3
+#   8   →      8
+
+# So you can remember:
+
+# ReLU removes negative values and keeps positive values.
+
+# In a neural network:
+
+# Dense(16, activation="relu")
+
+# means:
+
+# 16 neurons
+#    ↓
+# ReLU
+#    ↓
+# next layer
+# Why is ReLU commonly used?
+
+# Because it is simple and works very well for hidden layers in many neural networks.
+
+# 5. Sigmoid
+
+# Sigmoid is especially useful when your final answer is binary.
+
+# For example:
+
+# Disease?
+#     Yes / No
+
+# Loan approved?
+#     Yes / No
+
+# Promotion?
+#     Yes / No
+
+# Sigmoid converts a value into approximately:
+
+# 0 ─────────────── 1
+
+# So its output can be interpreted as a probability.
+
+# For example:
+
+# Sigmoid output
+
+# 0.10 → 10% probability
+# 0.30 → 30% probability
+# 0.70 → 70% probability
+# 0.95 → 95% probability
+
+# That's why you often see:
+
+# Dense(1, activation="sigmoid")
+
+# for binary classification.
+
+# It means:
+
+#         Hidden Layer
+#              ↓
+#         ┌─────────┐
+#         │ 1 neuron│
+#         └─────────┘
+#              ↓
+#           Sigmoid
+#              ↓
+#       probability
+#              ↓
+#        0 or 1
+# Putting everything together
+
+# Suppose we build a heart disease prediction neural network:
+
+# model = Sequential([
+#     Dense(16, activation="relu"),
+#     Dense(8, activation="relu"),
+#     Dense(1, activation="sigmoid")
+# ])
+
+# Read this code from top to bottom:
+
+# Layer 1
+# Dense(16, activation="relu")
+
+# ➡️ Create 16 neurons
+# ➡️ Apply ReLU
+
+# Layer 2
+# Dense(8, activation="relu")
+
+# ➡️ Create 8 neurons
+# ➡️ Apply ReLU
+
+# Output layer
+# Dense(1, activation="sigmoid")
+
+# ➡️ Create 1 neuron
+# ➡️ Apply Sigmoid
+# ➡️ Produce probability between 0 and 1
+
+# So visually:
+
+# Input Features
+#      │
+#      ▼
+# ┌───────────────────┐
+# │ Dense(16)         │
+# │ ReLU              │
+# │ 16 neurons        │
+# └───────────────────┘
+#      │
+#      ▼
+# ┌───────────────────┐
+# │ Dense(8)          │
+# │ ReLU              │
+# │ 8 neurons         │
+# └───────────────────┘
+#      │
+#      ▼
+# ┌───────────────────┐
+# │ Dense(1)          │
+# │ Sigmoid           │
+# │ 1 neuron          │
+# └───────────────────┘
+#      │
+#      ▼
+# Probability
+#      │
+#      ▼
+# Disease = 0 or 1
+# ⭐ The easiest way to remember
+# Term	Simple meaning
+# Sequential	Container that puts layers one after another
+# Dense	A fully connected layer
+# Dense(16)	Layer containing 16 neurons
+# activation	Function that transforms a neuron's output
+# ReLU	Keeps positive values, turns negative values into 0
+# Sigmoid	Converts output into a value between 0 and 1
+# One-line memory trick
+# Sequential → Layers in order
+# Dense      → Neurons
+# 16         → Number of neurons
+# Activation → How neuron output is transformed
+# ReLU       → Hidden layers commonly
+# Sigmoid    → Binary output commonly
+
+# And when you see:
+
+# Dense(16, activation="relu")
+
+# train yourself to immediately read it as:
+
+# "Create 16 neurons and pass their outputs through ReLU."
+
+# That way, when you encounter a different neural-network code later, you won't need to memorize the whole code—you can decode it piece by piece.
