@@ -28,36 +28,36 @@
 # Predict → Calculate Loss → Calculate Gradient → Update Weight
 
 # Complete code
-# import tensorflow as tf
+import tensorflow as tf
 
-# w = tf.Variable(0.5)
+w = tf.Variable(0.5)
 
-# x = tf.constant(2.0)
-# y_true = tf.constant(10.0)
+x = tf.constant(2.0)
+y_true = tf.constant(10.0)
 
-# learning_rate = 0.01
+learning_rate = 0.01
 
-# for step in range(20):
+for step in range(20):
 
-#     # Forward pass
-#     with tf.GradientTape() as tape:
-#         y_pred = w * x
-#         loss = (y_true - y_pred) ** 2
+    # Forward pass
+    with tf.GradientTape() as tape:
+        y_pred = w * x
+        loss = (y_true - y_pred) ** 2
 
-#     # Calculate gradient
-#     gradient = tape.gradient(loss, w)
+    # Calculate gradient
+    gradient = tape.gradient(loss, w)
 
-#     # Update weight
-#     w.assign_sub(learning_rate * gradient)
+    # Update weight
+    w.assign_sub(learning_rate * gradient)
 
-#     # Print results
-#     print(
-#         "Step:", step,
-#         "Weight:", w.numpy(),
-#         "Prediction:", y_pred.numpy(),
-#         "Loss:", loss.numpy(),
-#         "Gradient:", gradient.numpy()
-#     )
+    # Print results
+    print(
+        "Step:", step,
+        "Weight:", w.numpy(),
+        "Prediction:", y_pred.numpy(),
+        "Loss:", loss.numpy(),
+        "Gradient:", gradient.numpy()
+    )
 # 🧠 What happens in every step?
 
 # Think of the training loop like this:

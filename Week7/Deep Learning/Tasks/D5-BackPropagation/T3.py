@@ -31,14 +31,15 @@
 
 # We start with:
 
-# $$ w = 0.5 $$
+#  w = 0.5
+
 # Step 2 — Input and true value
 # x = tf.constant(2.0)
 # y_true = tf.constant(10.0)
 
 # So:
 
-# $$ x=2,\qquad y_{true}=10 $$
+#  x=2, y_{true}=10 
 # Step 3 — Forward propagation
 
 # Inside GradientTape:
@@ -47,7 +48,7 @@
 
 # Therefore:
 
-# $$ y_{pred}=0.5\times2=1.0 $$
+#  y_{pred}=0.5\times2=1.0 
 
 # So the model predicts 1.0, but the correct answer is 10.0.
 

@@ -28,37 +28,37 @@
 
 # Use this code:
 
-# import tensorflow as tf
+import tensorflow as tf
 
-# learning_rates = [0.001, 0.01, 0.1]
+learning_rates = [0.001, 0.01, 0.1]
 
-# for learning_rate in learning_rates:
+for learning_rate in learning_rates:
 
-#     print("\n==============================")
-#     print("Learning Rate:", learning_rate)
-#     print("==============================")
+    print("\n==============================")
+    print("Learning Rate:", learning_rate)
+    print("==============================")
 
-#     w = tf.Variable(0.5)
+    w = tf.Variable(0.5)
 
-#     x = tf.constant(2.0)
-#     y_true = tf.constant(10.0)
+    x = tf.constant(2.0)
+    y_true = tf.constant(10.0)
 
-#     for step in range(20):
+    for step in range(20):
 
-#         with tf.GradientTape() as tape:
-#             y_pred = w * x
-#             loss = (y_true - y_pred) ** 2
+        with tf.GradientTape() as tape:
+            y_pred = w * x
+            loss = (y_true - y_pred) ** 2
 
-#         gradient = tape.gradient(loss, w)
+        gradient = tape.gradient(loss, w)
 
-#         w.assign_sub(learning_rate * gradient)
+        w.assign_sub(learning_rate * gradient)
 
-#         print(
-#             "Step:", step,
-#             "Weight:", round(float(w.numpy()), 4),
-#             "Prediction:", round(float(y_pred.numpy()), 4),
-#             "Loss:", round(float(loss.numpy()), 4)
-#         )
+        print(
+            "Step:", step,
+            "Weight:", round(float(w.numpy()), 4),
+            "Prediction:", round(float(y_pred.numpy()), 4),
+            "Loss:", round(float(loss.numpy()), 4)
+        )
 # 🧠 What is actually changing?
 
 # Only this:

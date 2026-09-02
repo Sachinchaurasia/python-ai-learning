@@ -41,8 +41,8 @@
 
 # The formula is:
 
-# $$ \text{New Weight} = \text{Old Weight} - (\text{Learning Rate} \times \text{Gradient}) $$
-# \(m=\frac{9-6}{7-3}\)
+# {New Weight} = {Old Weight} - {Learning Rate} {Gradient})
+
 # Give feedback
 
 # Now substitute the values:
@@ -73,3 +73,4 @@
 #    0.77
 
 # This is the basic idea behind how an optimizer such as Adam changes neural-network weights during training.
+
