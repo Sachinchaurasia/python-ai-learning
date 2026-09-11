@@ -48,7 +48,7 @@ for step in range(20):
     gradient = tape.gradient(loss, w)
 
     # Update weight
-    w.assign_sub(learning_rate * gradient)
+    w.assign_sub(learning_rate * gradient) 
 
     # Print results
     print(

@@ -42,7 +42,7 @@
 # The formula is:
 
 # {New Weight} = {Old Weight} - {Learning Rate} {Gradient})
-
+ 
 # Give feedback
 
 # Now substitute the values:
