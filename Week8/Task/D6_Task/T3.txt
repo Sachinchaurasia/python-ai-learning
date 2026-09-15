@@ -1,0 +1,55 @@
+🧠 TASK 3 — Thinking Challenge
+
+Consider:
+
+"The dog chased the cat because it was fast."
+
+What should the model investigate when processing "it"?
+
+Explain which earlier words might be relevant and why attention is useful.
+
+###########################################################################
+🧠 TASK 3 — Thinking Challenge
+
+For the sentence:
+
+"The dog chased the cat because it was fast."
+
+When processing "it", the model should investigate the earlier words that could tell it what "it" refers to.
+
+🔍 Important words
+
+The strongest candidates are:
+
+dog 🐕
+cat 🐈
+chased
+fast
+
+The model needs to determine whether "it" refers to the dog or the cat based on the context.
+
+🧠 Why is attention useful?
+
+Attention allows the token "it" to look at other tokens in the sentence and assign different importance to them.
+
+Conceptually:
+
+The   dog   chased   the   cat   because   it   was   fast
+       ↑                              ↑
+       │                              │
+       └──── possible relationship ───┘
+                                      "it"
+
+The model might learn relationships such as:
+
+"it" ↔ dog    → some attention
+"it" ↔ cat    → some attention
+"it" ↔ fast   → useful contextual information
+
+The important point is that attention doesn't simply look at the nearest word. It considers relationships between tokens across the sequence.
+
+🔥 Key idea
+
+Attention is useful because it lets the model examine the surrounding context and determine which earlier words are important for understanding what "it" means.
+
+⚠️ Also notice something interesting: this sentence is actually ambiguous. Without additional context, both dog and cat could potentially be the thing that was fast. A good model should recognize that ambiguity rather than assuming there is always one certain answer.

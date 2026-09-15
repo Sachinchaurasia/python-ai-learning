@@ -1,0 +1,43 @@
+🔥 TASK 6 — Complete the Flow
+
+The missing step is:
+
+Text
+ ↓
+Tokenization
+ ↓
+Tokens
+ ↓
+Token IDs
+ ↓
+Embeddings
+ ↓
+Transformer
+✅ Answer: Embeddings
+
+Here's what happens at each stage:
+
+Text → Original human-readable text.
+Tokenization → Breaks text into tokens.
+Tokens → Individual pieces of text.
+Token IDs → Each token gets a numerical identifier.
+Embeddings → Token IDs are converted into learned vectors of numbers.
+Transformer → Processes those vectors using mechanisms such as attention to understand relationships and context.
+🧠 Your complete LLM pipeline so far
+Text
+ ↓
+Tokenization
+ ↓
+Tokens
+ ↓
+Token IDs
+ ↓
+Embeddings
+ ↓
+Transformer
+ ↓
+Next-Token Prediction
+ ↓
+Generated Text
+
+🔥 You've now completed the core foundation of Tokens + Embeddings.

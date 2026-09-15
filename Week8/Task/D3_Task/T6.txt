@@ -1,0 +1,58 @@
+🔥 TASK 6 — Complete the Flow
+
+The correct flow is:
+
+Text
+ ↓
+Tokenization
+ ↓
+Tokens
+ ↓
+Token IDs
+ ↓
+Embeddings
+ ↓
+LLM
+✅ Missing steps
+
+1. Tokenization
+
+Converts the original text into smaller pieces called tokens.
+
+"Java is powerful."
+        ↓
+"Java" | " is" | " powerful" | "."
+
+2. Token IDs
+
+Each token is mapped to a numerical ID from the tokenizer's vocabulary.
+
+"Java" | " is" | " powerful"
+   ↓       ↓          ↓
+ 1527     318        4921
+
+The numbers above are only examples.
+
+🧠 Full picture
+Text
+ ↓
+Tokenization
+ ↓
+Tokens
+ ↓
+Token IDs
+ ↓
+Embeddings
+ ↓
+LLM
+ ↓
+Prediction / Generated Output
+⭐ Key connection
+
+You have now learned:
+
+Token → Tokenization → Token ID
+
+The next concept is Embeddings, where those token IDs are converted into meaningful numerical vectors that the neural network can process.
+
+This is exactly where Week 8 Day 4 — Embeddings begins.

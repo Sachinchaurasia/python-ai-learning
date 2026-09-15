@@ -1,0 +1,44 @@
+🧠 TASK 1 — What is a Token?
+
+In my own words:
+
+A token is a small piece of text that an LLM processes. It can be a complete word, part of a word, punctuation, or another piece of text.
+
+For example, the sentence:
+
+"Java is powerful."
+
+might be broken into tokens roughly like:
+
+"Java" | " is" | " powerful" | "."
+
+The exact tokenization depends on the tokenizer, so tokens don't always correspond exactly to words.
+
+🔥 Why are tokens important?
+
+Remember our previous lesson:
+
+An LLM generates text by predicting the next token.
+
+So the process is roughly:
+
+Prompt
+  ↓
+Convert text → Tokens
+  ↓
+LLM processes tokens
+  ↓
+Predict next token
+  ↓
+Add the token
+  ↓
+Predict next token
+  ↓
+...
+  ↓
+Generated response
+⭐ Simple definition
+
+A token is a unit of text that an LLM uses as input and output when processing and generating language.
+
+Important: A token is not necessarily one word. A long word may be split into several tokens, while punctuation can also be a token.

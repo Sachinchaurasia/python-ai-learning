@@ -1,0 +1,109 @@
+# TASK 5 — Why is this statement important?
+
+# “An LLM generates text by predicting what comes next, one token at a time.”
+
+# This statement is very important because it explains the basic mechanism behind how an LLM generates a response.
+
+# 1️⃣ The LLM doesn't write the entire answer at once
+
+# When you give an LLM a prompt, it doesn't produce the complete sentence instantly.
+
+# For example:
+
+# Prompt:
+# "Java is a"
+
+#           ↓
+
+# Model predicts the next token
+
+#           ↓
+
+# "programming"
+
+# Then it uses the new context:
+
+# "Java is a programming"
+
+#           ↓
+
+# Predict next token
+
+#           ↓
+
+# "language"
+
+# Then:
+
+# "Java is a programming language"
+
+#           ↓
+
+# Predict next token
+
+#           ↓
+
+# "used"
+
+# It continues this process until it has generated the response.
+
+# 2️⃣ What is a token?
+
+# A token is a small piece of text that the model processes.
+
+# A token can be:
+
+# a complete word
+# part of a word
+# punctuation
+# sometimes a space-related piece
+
+# For example, a sentence such as:
+
+# "I love Python."
+
+# might be broken into tokens roughly like:
+
+# "I" | " love" | " Python" | "."
+
+# The exact tokens depend on the tokenizer.
+
+# 3️⃣ The important idea
+
+# The model repeatedly performs:
+
+# Existing Context
+#        ↓
+# Predict Next Token
+#        ↓
+# Add Token to Context
+#        ↓
+# Predict Next Token
+#        ↓
+# Add Token to Context
+#        ↓
+#        ...
+
+# So an LLM is essentially building the response step-by-step.
+
+# ⭐ Why this matters for AI Engineering
+
+# Understanding this helps you understand later topics such as:
+
+# Tokens → Tokenization → Embeddings → Transformers → Attention → LLMs → Prompt Engineering
+
+# And it also explains why the wording of your prompt matters: the prompt provides the context from which the model begins predicting the next tokens.
+
+# 🧠 Simple analogy
+
+# Think of autocomplete on your phone:
+
+# "I am going to"
+
+#         ↓
+
+# Phone predicts: "school"
+
+# An LLM does something much more sophisticated, but the fundamental idea is similar:
+
+# Given the context so far, predict what should come next.

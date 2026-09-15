@@ -1,0 +1,95 @@
+🧠 TASK 1 — What is an Embedding?
+
+In my own words:
+
+An embedding is a numerical vector that represents a token, word, sentence, or other piece of information in a way that captures useful patterns and relationships in the data.
+
+🔹 Simple example
+
+Suppose we have:
+
+"king"
+
+The model doesn't work directly with the word "king". It represents it as a vector of numbers:
+
+"king"
+   ↓
+[0.21, -0.45, 0.78, 0.13, ...]
+
+The actual vector can contain many dimensions.
+
+Similarly:
+
+"queen"
+   ↓
+[0.19, -0.42, 0.75, 0.16, ...]
+
+The vectors for related concepts can have similar patterns.
+
+🔥 Token ID vs Embedding
+
+This is very important:
+
+Token
+  ↓
+Token ID
+  ↓
+Embedding
+
+For example:
+
+"Python"
+   ↓
+Token ID → 18750    ← identifier
+   ↓
+Embedding → [0.23, -0.51, 0.77, ...]   ← numerical representation
+
+A token ID is simply an identifier.
+
+An embedding is a learned numerical representation that the neural network can use to capture relationships and patterns.
+
+🧠 Why do we need embeddings?
+
+Neural networks need numerical data to perform mathematical operations.
+
+Embeddings allow the model to work with language in a form that can be processed mathematically.
+
+For example, related words may have related representations:
+
+        Embedding Space
+
+        "king" 👑
+           ↘
+            ↘
+          "queen" 👸
+
+     "apple" 🍎
+          ↗
+         ↗
+     "banana" 🍌
+
+This doesn't mean the model stores a literal picture or dictionary definition. Rather, the learned numerical representations reflect relationships found during training.
+
+⭐ Simple definition to remember
+
+An embedding is a learned vector of numbers that represents information such as a token or word, allowing a neural network to process it and learn relationships between different pieces of information.
+
+🔥 Your current flow
+
+You have now reached an important part of the LLM pipeline:
+
+Text
+ ↓
+Tokenization
+ ↓
+Tokens
+ ↓
+Token IDs
+ ↓
+Embeddings
+ ↓
+Transformer / LLM
+ ↓
+Next-token prediction
+
+This connection between Token IDs → Embeddings → Neural Network is one of the most important foundations for understanding Transformers.

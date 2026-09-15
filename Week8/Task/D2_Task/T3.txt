@@ -1,0 +1,76 @@
+🔥 TASK 3 — Why is Next-Token Prediction Important for an LLM?
+
+Next-token prediction is the fundamental mechanism an LLM uses to generate text.
+
+1️⃣ It allows the LLM to generate text step-by-step
+
+Suppose the prompt is:
+
+"Java is a"
+
+The model predicts the next likely token:
+
+programming
+
+Now it has:
+
+"Java is a programming"
+
+Then it predicts the next token:
+
+language
+
+So it continues:
+
+Java is a → programming → language → ...
+2️⃣ It helps the model understand context
+
+The model doesn't only look at the previous single word. It considers the context available so far when predicting the next token.
+
+For example:
+
+"I went to the bank to deposit..."
+
+The surrounding words help the model understand that bank probably refers to a financial institution.
+
+3️⃣ It allows one basic mechanism to perform many tasks
+
+By predicting the next token, an LLM can generate:
+
+Questions → Answers
+Prompt → Explanation
+Description → Summary
+Requirement → Code
+English → Translation
+
+The same fundamental process can produce many different types of text.
+
+⭐ Most important idea
+
+Think of an LLM as repeatedly doing:
+
+Context
+   ↓
+Predict next token
+   ↓
+Add token
+   ↓
+New context
+   ↓
+Predict next token
+   ↓
+Add token
+   ↓
+      ...
+
+So:
+
+Next-token prediction is important because it is the basic process through which an LLM generates coherent text one token at a time while using the surrounding context to decide what should come next.
+
+🧠 Connection to your AI roadmap
+
+This concept will become especially important when we study:
+
+Tokens → Embeddings → Transformers → Attention → LLMs → Prompt Engineering
+
+Understanding next-token prediction now will make those topics much easier.

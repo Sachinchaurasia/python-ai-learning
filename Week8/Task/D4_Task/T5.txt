@@ -1,0 +1,73 @@
+🧠 TASK 5 — Why can embeddings be useful for semantic search?
+
+Embeddings are useful for semantic search because they can represent the meaning and relationships of text as numerical vectors.
+
+🔹 Traditional keyword search
+
+Suppose you search:
+
+"How to fix a laptop keyboard?"
+
+A simple keyword search mainly looks for matching words such as:
+
+laptop
+keyboard
+fix
+
+It may struggle if a document says:
+
+"Troubleshooting non-working keys on a notebook computer."
+
+The words are different, even though the meaning is very similar.
+
+🔹 Semantic search with embeddings
+
+Embeddings convert text into vectors:
+
+Query:
+"How to fix a laptop keyboard?"
+        ↓
+   Embedding
+        ↓
+[0.21, -0.45, 0.78, ...]
+
+A document can also be converted:
+
+"Troubleshooting non-working keys on a notebook computer."
+        ↓
+   Embedding
+        ↓
+[0.20, -0.43, 0.76, ...]
+
+If the vectors are sufficiently similar, the search system can recognize that the query and document have related meanings, even though they don't use exactly the same words.
+
+🔥 Simple example
+
+You search:
+
+"How can I learn Java?"
+
+A semantic search system might find:
+
+"Java programming courses for beginners."
+
+Even though the exact words aren't identical, the meaning is closely related.
+
+🧠 Basic process
+User Query
+    ↓
+Embedding
+    ↓
+Compare with document embeddings
+    ↓
+Find similar vectors
+    ↓
+Return relevant documents
+
+A common technique for comparing vectors is cosine similarity.
+
+⭐ Key idea
+
+Embeddings are useful for semantic search because similar meanings can be represented by similar vectors, allowing the system to find relevant information even when the exact keywords don't match.
+
+This is one of the most important real-world applications of embeddings and will become very useful when you build RAG (Retrieval-Augmented Generation) systems later in your AI Engineer roadmap.

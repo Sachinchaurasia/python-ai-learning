@@ -1,0 +1,61 @@
+🔹 In AI/ML
+
+Vectors are useful because computers and neural networks can perform mathematical operations on them.
+
+For example:
+
+"Python"
+   ↓
+Embedding
+   ↓
+[0.21, -0.45, 0.78, 0.13]
+
+The numbers themselves don't have an obvious human meaning individually. Together, they form a representation learned by the model.
+
+🔥 Vector vs Embedding
+
+This distinction is important:
+
+Vector → A general mathematical list of numbers.
+
+[2, 5, 8]
+
+Embedding → A vector specifically used to represent something such as a word, token, sentence, image, etc., in a learned numerical space.
+
+"Python"
+   ↓
+[0.21, -0.45, 0.78, ...]
+
+So:
+
+Every embedding is a vector, but not every vector is an embedding.
+
+🧠 Connection to your previous lessons
+
+You can now understand:
+
+Text
+ ↓
+Token
+ ↓
+Token ID
+ ↓
+Embedding
+ ↓
+Vector of numbers
+ ↓
+Neural Network
+⭐ Easy analogy
+
+Think of a vector like a coordinate.
+
+On a simple map:
+
+Point A = (2, 3)
+
+has two numbers describing its location.
+
+Similarly, an embedding might have hundreds or thousands of numerical dimensions describing a learned representation.
+
+Vector = an ordered collection of numbers.
+Embedding = a learned vector representing something.

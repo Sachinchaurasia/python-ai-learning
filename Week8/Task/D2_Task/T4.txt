@@ -1,0 +1,71 @@
+🧠 TASK 4 — Training vs Inference
+
+The easiest way to remember the difference is:
+
+Training = teaching the model
+Inference = using the trained model
+
+	Training	Inference
+Purpose	Learn patterns from data	Generate an output using what was learned
+Data	Huge training dataset	User's prompt/input
+What happens?	Model parameters are updated	Parameters generally stay fixed
+Computational cost	Usually very high	Usually much lower
+Example	Training an LLM on massive text datasets	Asking the LLM to write an email
+1️⃣ Training
+
+During training, the model learns patterns from a large amount of data.
+
+Training Data
+     ↓
+   Model
+     ↓
+Prediction
+     ↓
+Compare with expected result
+     ↓
+Update parameters
+     ↓
+Repeat many times
+
+For an LLM, the model learns things such as language patterns and relationships between tokens.
+
+2️⃣ Inference
+
+Inference happens when we actually use the trained model.
+
+For example:
+
+User:
+"Explain Java inheritance"
+        ↓
+   Trained LLM
+        ↓
+Generated explanation
+
+The model uses the knowledge/patterns learned during training to produce an output.
+
+⭐ Simple analogy
+
+Imagine teaching a student:
+
+📚 Training
+Teacher → Student
+Student learns concepts
+
+Then:
+
+📝 Inference
+Exam Question → Student → Answer
+
+The learning process is training, while answering the question is inference.
+
+🔥 Remember
+TRAINING
+Data → Learn → Update Model
+
+INFERENCE
+Prompt → Trained Model → Output
+
+One-line answer:
+
+Training is the process of teaching an AI model by learning from data, while inference is the process of using the trained model to generate predictions or outputs for new input.

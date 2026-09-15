@@ -1,0 +1,52 @@
+❌ TASK 3 — False
+
+“Every word is exactly one token.” → FALSE
+
+A token is not necessarily equal to one complete word.
+
+A tokenizer can represent text in different ways:
+
+Example 1 — One word can be one token
+"Java"
+   ↓
+"Java"
+
+Here, the word may be represented as one token.
+
+Example 2 — One word can become multiple tokens
+
+A less common or longer word might be split into pieces:
+
+"unbelievable"
+       ↓
+"un" | "believ" | "able"
+
+So one word can contain multiple tokens.
+
+Example 3 — A token can be punctuation
+"Hello!"
+
+could roughly become:
+
+"Hello" | "!"
+
+The ! can be its own token.
+
+🔥 Therefore
+1 word ≠ always 1 token
+
+Instead:
+
+Text
+ ↓
+Tokenizer
+ ↓
+Tokens
+
+The exact tokens depend on the tokenization method and vocabulary used by the particular LLM.
+
+⭐ Remember
+
+A token is a unit of text, not necessarily a whole word.
+
+This is important because LLMs have token limits. The model's context window is measured in tokens rather than simply in the number of words.

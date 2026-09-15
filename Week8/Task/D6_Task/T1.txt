@@ -1,0 +1,394 @@
+1. What is Attention?
+
+Attention is a mechanism that allows a model to decide which parts of the input are important when processing a particular token.
+
+Example:
+
+"The bank was crowded because people wanted to deposit money."
+
+When understanding "bank", words like:
+
+bank
+ ↓
+deposit
+money
+people
+crowded
+
+are more useful than unrelated words.
+
+So attention essentially asks:
+
+🧠 "Which other tokens should I pay attention to?"
+
+2. What is Self-Attention?
+
+Self-attention is attention where tokens attend to other tokens within the same sequence.
+
+Example:
+
+"The cat drank milk because it was hungry."
+
+When processing:
+
+"it"
+
+the model can look at:
+
+The
+cat
+drank
+milk
+because
+it
+was
+hungry
+
+and learn that "it" is strongly related to "cat".
+
+Simple flow
+Input Tokens
+     ↓
+Self-Attention
+     ↓
+Relationships between tokens
+     ↓
+Context-aware representations
+3. What is a Query?
+
+A Query (Q) represents:
+
+"What information am I looking for?"
+
+Imagine the token:
+
+"bank"
+
+Its Query can be thought of as asking:
+
+🧠 "Which other tokens can help me understand my meaning?"
+
+In the attention mechanism, the Query is mathematically generated from the token's representation.
+
+Token representation
+        ↓
+   Query (Q)
+        ↓
+"What am I looking for?"
+4. What is a Key?
+
+A Key (K) represents:
+
+"What information do I contain that might be relevant to a query?"
+
+Think of every token as having a label describing what kind of information it provides.
+
+For example:
+
+"deposit" → financial-related information
+"money"   → financial-related information
+"river"   → geographical information
+
+The Query of "bank" can be compared against the Keys of other tokens.
+
+Query("bank")
+      ↓
+Compare with Keys
+      ↓
+Find relevant tokens
+5. What is a Value?
+
+A Value (V) is the actual information that gets passed forward after attention determines which tokens are important.
+
+Think of it this way:
+
+Query → What am I looking for?
+Key   → What information do I have?
+Value → Here is the actual information.
+🧠 Easy analogy
+
+Imagine a library:
+
+Query = Your search question
+Key   = Book's description/index
+Value = Actual book information
+
+You compare your question with the book descriptions to determine which books are relevant, then retrieve information from those books.
+
+6. Why do we calculate Q × Kᵀ?
+
+This is one of the most important parts.
+
+We calculate:
+
+Q × Kᵀ
+
+to measure how relevant each Key is to a Query.
+
+In simple terms:
+
+It produces attention scores.
+
+Higher score:
+
+Query ↔ Key
+   ↓
+Strong relationship
+
+Lower score:
+
+Query ↔ Key
+   ↓
+Weak relationship
+Example
+
+Suppose:
+
+Query = "bank"
+
+and we compare it with Keys:
+
+deposit
+money
+river
+tree
+
+Conceptually:
+
+bank ↔ deposit  → high score
+bank ↔ money    → high score
+bank ↔ river    → depends on context
+bank ↔ tree     → low score
+Why Kᵀ?
+
+If:
+
+Q = [1 × d]
+K = [n × d]
+
+we transpose K:
+
+Kᵀ = [d × n]
+
+so matrix multiplication produces:
+
+Q × Kᵀ
+      ↓
+Attention scores
+
+For multiple tokens, this produces a complete attention-score matrix.
+
+7. Why do we use Softmax?
+
+The raw attention scores aren't convenient to use directly.
+
+Softmax converts them into normalized attention weights.
+
+For example:
+
+Raw scores:
+
+deposit → 4.2
+money   → 3.1
+tree    → 0.5
+
+After softmax, conceptually:
+
+deposit → 0.65
+money   → 0.30
+tree    → 0.05
+
+Now the values behave like relative importance weights.
+
+Important properties
+
+Softmax:
+
+converts scores into positive values
+makes them sum to approximately 1
+highlights relatively important tokens
+
+So:
+
+Q × Kᵀ
+    ↓
+Raw attention scores
+    ↓
+Softmax
+    ↓
+Attention weights
+8. Why are Values multiplied by attention weights?
+
+This is where the model collects useful information.
+
+Suppose:
+
+Attention weights:
+
+deposit → 0.6
+money   → 0.3
+tree    → 0.1
+
+Then:
+
+Output =
+0.6 × Value(deposit)
++
+0.3 × Value(money)
++
+0.1 × Value(tree)
+
+Therefore, information from important tokens contributes more strongly to the output.
+
+🔥 Core idea
+Attention weights
+       ↓
+Tell us HOW MUCH to use each Value
+       ↓
+Weighted Values
+       ↓
+Combined representation
+9. What is Multi-Head Attention?
+
+Instead of having one attention mechanism, Transformers use multiple attention mechanisms called heads.
+
+Each head can learn different types of relationships.
+
+For example:
+
+Head 1 → grammatical relationships
+Head 2 → subject ↔ verb relationships
+Head 3 → semantic relationships
+Head 4 → long-range relationships
+
+These are conceptual examples—the model learns the relationships rather than being explicitly told what each head must represent.
+
+Flow
+Input
+  ↓
+ ┌─────────┬─────────┬─────────┐
+ ↓         ↓         ↓
+Head 1    Head 2    Head 3   ...
+ ↓         ↓         ↓
+Attention Attention Attention
+ └─────────┴─────────┴─────────┘
+            ↓
+       Concatenate
+            ↓
+      Linear Projection
+            ↓
+          Output
+
+This allows the Transformer to examine the input from multiple representation subspaces simultaneously.
+
+10. Why does GPT use causal/masked attention?
+
+This is extremely important for understanding GPT.
+
+GPT generates text from left to right.
+
+Suppose the model receives:
+
+"I love machine"
+
+and needs to predict the next token.
+
+It should be allowed to see:
+
+I
+love
+machine
+
+but not the future answer.
+
+If the complete sentence were:
+
+"I love machine learning."
+
+the model must not be allowed to look at "learning" while predicting "learning" during training.
+
+Otherwise, it would be cheating. 😄
+
+Causal attention
+
+The attention matrix is therefore masked so each token can only attend to:
+
+itself + previous tokens
+
+Example:
+
+        I   love   machine   learning
+I       ✓
+love    ✓     ✓
+machine ✓     ✓       ✓
+learning✓     ✓       ✓         ✓
+
+Future tokens are blocked.
+
+Conceptually:
+
+Previous tokens ──────→ Allowed ✓
+Future tokens   ──────→ Blocked ✗
+
+This is called:
+
+Causal attention
+Masked self-attention
+Autoregressive attention
+
+It ensures GPT learns the correct task:
+
+Given the previous tokens, predict the next token.
+
+🧠 The Complete Attention Mechanism
+
+Now connect all 10 concepts:
+
+Input Tokens
+     ↓
+Embeddings
+     ↓
+ ┌───────────────┐
+ │ Generate Q,K,V │
+ └───────────────┘
+     ↓
+   Q × Kᵀ
+     ↓
+Attention Scores
+     ↓
+   Softmax
+     ↓
+Attention Weights
+     ↓
+Weights × Values
+     ↓
+Contextual Representation
+
+For GPT:
+
+                    ┌── Query
+Token Embeddings ───┼── Key
+                    └── Value
+                         ↓
+                      Q × Kᵀ
+                         ↓
+                   Causal Mask
+                         ↓
+                      Softmax
+                         ↓
+                 Attention Weights
+                         ↓
+                     × Values
+                         ↓
+                  Attention Output
+🔑 The easiest way to remember Q, K, V
+
+Query = What am I looking for?
+Key = What information do I have?
+Value = What information should I actually provide?
+
+And the entire mechanism can be remembered as:
+
+Compare Q with K → calculate importance → use those weights to combine V.
+
+This is the heart of self-attention, and understanding it puts you in a strong position for Day 7: Prompt Engineering + First LLM App.

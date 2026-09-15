@@ -1,0 +1,312 @@
+1. What is a Transformer?
+
+A Transformer is a neural network architecture designed to understand and process sequences of data, especially text.
+
+The most important idea behind Transformers is attention.
+
+Instead of processing words strictly one by one like older RNN/LSTM models, Transformers can look at many words at the same time and determine which words are important to each other.
+
+Example
+
+"The animal didn't cross the road because it was tired."
+
+To understand what "it" refers to, the model needs to look at other words in the sentence.
+
+The Transformer uses attention to determine these relationships.
+
+Basic flow
+Input Text
+    ↓
+Tokenization
+    ↓
+Token IDs
+    ↓
+Embeddings
+    ↓
+Positional Information
+    ↓
+Transformer
+    ↓
+Contextual Representation
+    ↓
+Prediction / Output
+2. Why do Transformers need attention?
+
+Because different words have different importance depending on the context.
+
+Consider:
+
+"I deposited money in the bank."
+
+Here, "bank" means a financial institution.
+
+Now:
+
+"I sat beside the river bank."
+
+Here, "bank" means the land beside a river.
+
+The model needs to understand which surrounding words are relevant to "bank".
+
+Attention allows the model to ask:
+
+🧠 "Which other words should I pay attention to when understanding this word?"
+
+3. What is self-attention?
+
+Self-attention is a mechanism where each token looks at the other tokens in the same input sequence to understand its context.
+
+Example:
+
+"The dog chased the ball because it was fast."
+
+When processing "it", the model can examine:
+
+The
+dog
+chased
+the
+ball
+because
+it
+was
+fast
+
+It can learn that "it" is more strongly related to "dog" than to some unrelated words.
+
+Simple idea
+        "it"
+         ↓
+ ┌───────┼────────┐
+ ↓       ↓        ↓
+dog     ball     fast
+ ↑
+strong relationship
+
+Self-attention calculates relationships between tokens.
+
+This allows the model to create context-aware representations.
+
+4. What is the difference between an encoder and decoder?
+
+A Transformer can contain two major components:
+
+Encoder → Understands input
+Decoder → Generates output
+🟦 Encoder
+
+The encoder processes the input and creates a representation containing contextual information.
+
+Example:
+
+"I love programming"
+        ↓
+     Encoder
+        ↓
+Contextual representation
+🟩 Decoder
+
+The decoder generates output, usually one token at a time.
+
+Example:
+
+"I love"
+   ↓
+Decoder
+   ↓
+"programming"
+Important architectures
+Architecture	Main purpose	Example
+Encoder-only	Understand text	BERT
+Decoder-only	Generate text	GPT-style LLMs
+Encoder-decoder	Understand + generate	T5, original Transformer
+
+For modern LLMs, decoder-only Transformers are extremely important because they are naturally suited for next-token prediction and text generation.
+
+5. Why does a Transformer need positional information?
+
+This is extremely important.
+
+Transformers can process tokens in parallel.
+
+But this creates a problem:
+
+How does the model know the order of the words?
+
+Consider:
+
+Dog bites man.
+
+and
+
+Man bites dog.
+
+The same words appear, but the meaning is completely different.
+
+Therefore, the model needs information about where each token occurs in the sequence.
+
+Dog    → Position 1
+bites  → Position 2
+man    → Position 3
+
+This information is called positional information.
+
+Conceptually
+Token Embedding
+       +
+Position Information
+       ↓
+Contextual Input
+       ↓
+Transformer
+
+Without positional information, the model could have difficulty distinguishing different word orders.
+
+6. What is a Transformer block?
+
+A Transformer block is one processing unit of a Transformer.
+
+A simplified Transformer block contains:
+
+Input
+  ↓
+Self-Attention
+  ↓
+Add & Normalize
+  ↓
+Feed-Forward Neural Network
+  ↓
+Add & Normalize
+  ↓
+Output
+🧠 Main components
+
+1. Self-Attention
+
+Determines relationships between tokens.
+
+2. Feed-Forward Network
+
+Processes the information learned from attention and transforms it further.
+
+3. Residual Connections
+
+Help information flow through deep networks.
+
+4. Layer Normalization
+
+Helps stabilize the network during training.
+
+A large Transformer consists of many Transformer blocks stacked together.
+
+Conceptually:
+
+Input
+  ↓
+Transformer Block 1
+  ↓
+Transformer Block 2
+  ↓
+Transformer Block 3
+  ↓
+   ...
+  ↓
+Transformer Block N
+  ↓
+Output
+7. Why are Transformers important for LLMs?
+
+This is the most important question of Day 5.
+
+Transformers made it possible to train very large language models efficiently and capture relationships across long pieces of text.
+
+They provide several major advantages:
+
+⚡ 1. Parallel processing
+
+Transformers can process many tokens simultaneously during training.
+
+🧠 2. Context understanding
+
+Attention allows the model to determine relationships between different tokens.
+
+📈 3. Scalability
+
+Transformer architectures can be scaled to extremely large numbers of parameters and training datasets.
+
+🔄 4. Strong text generation
+
+Decoder-based Transformers can perform:
+
+Context
+   ↓
+Predict next token
+   ↓
+Add token
+   ↓
+Predict next token
+   ↓
+Repeat
+
+This is fundamental to modern LLMs.
+
+🔥 Connect Everything You've Learned
+
+You have now learned:
+
+TEXT
+ ↓
+TOKENIZATION
+ ↓
+TOKENS
+ ↓
+TOKEN IDs
+ ↓
+EMBEDDINGS
+ ↓
+POSITIONAL INFORMATION
+ ↓
+TRANSFORMER
+ ↓
+SELF-ATTENTION
+ ↓
+CONTEXTUAL REPRESENTATION
+ ↓
+NEXT-TOKEN PREDICTION
+ ↓
+GENERATED TEXT
+
+And your Week 7 Deep Learning knowledge connects directly here:
+
+Week 7
+Neural Networks
+      ↓
+Weights
+      ↓
+Forward Pass
+      ↓
+Loss
+      ↓
+Backpropagation
+      ↓
+Weight Updates
+
+
+Week 8
+LLM
+      ↓
+Embeddings
+      ↓
+Attention
+      ↓
+Transformer Blocks
+      ↓
+Next-token Prediction
+🧠 One-line answers for revision
+Transformer: A neural network architecture that uses attention to process relationships between tokens.
+Attention: Helps the model determine which tokens are important to each other.
+Self-attention: Each token attends to other tokens within the same sequence.
+Encoder vs Decoder: Encoder mainly understands/represents input; decoder generates output.
+Positional information: Tells the model the order/location of tokens.
+Transformer block: A processing unit containing attention, feed-forward layers, normalization, and residual connections.
+Importance for LLMs: Transformers provide efficient context processing, scalability, and powerful text generation.

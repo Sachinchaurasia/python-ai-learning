@@ -1,0 +1,79 @@
+💻 TASK 4 — Tiny Conceptual Exercise
+
+Write this in Python:
+
+tokens = [
+    "I",
+    "love",
+    "machine",
+    "learning"
+]
+
+for position, token in enumerate(tokens):
+    print(position, token)
+
+Expected idea:
+
+0 I
+1 love
+2 machine
+3 learning
+
+This isn't a Transformer yet. It is simply helping you understand token position, which Transformers need.
+###################################################################################################################################
+
+💻 TASK 4 — Token Position
+
+Exactly. Run this Python code:
+
+tokens = [
+    "I",
+    "love",
+    "machine",
+    "learning"
+]
+
+for position, token in enumerate(tokens):
+    print(position, token)
+
+    
+✅ Expected Output
+0 I
+1 love
+2 machine
+3 learning
+🧠 What is happening?
+
+enumerate(tokens) gives us two things:
+
+position → index/location of the token
+token    → actual word
+
+So:
+
+Position	Token
+0	I
+1	love
+2	machine
+3	learning
+🔥 Why is this important for Transformers?
+
+The Transformer needs to know that:
+
+"I love machine learning"
+
+is different from:
+
+"learning machine love I"
+
+The words/tokens alone don't tell the Transformer their order.
+
+Therefore:
+
+Token
+  +
+Position
+  ↓
+Transformer input
+
+This is the basic idea behind positional information.

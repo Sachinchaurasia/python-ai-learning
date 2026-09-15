@@ -1,0 +1,41 @@
+🧪 TASK 2 — Complete the Pipeline
+
+The correct answers are:
+
+Text
+ ↓
+Tokenization
+ ↓
+Token IDs
+ ↓
+Embeddings
+ ↓
+Positional Information
+ ↓
+Self-Attention
+ ↓
+Feed-Forward Network
+ ↓
+Output
+✅ Answers
+Tokenization
+Embeddings
+Self-Attention
+🧠 Remember the flow
+Text
+  ↓
+Tokenization       → Break text into tokens
+  ↓
+Token IDs          → Convert tokens into numbers
+  ↓
+Embeddings         → Convert IDs into meaningful vectors
+  ↓
+Positional Info    → Tell the model token order
+  ↓
+Self-Attention     → Understand relationships between tokens
+  ↓
+Feed-Forward       → Further process the information
+  ↓
+Output
+
+🔥 Key connection: This pipeline is the foundation for understanding how an LLM processes text inside a Transformer.

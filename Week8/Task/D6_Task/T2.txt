@@ -1,0 +1,57 @@
+🧪 TASK 2 — Complete the Pipeline
+
+Fill in the blanks:
+
+Input Embeddings
+       ↓
+      Q K V
+       ↓
+      Q × Kᵀ
+       ↓
+   __________
+       ↓
+    Softmax
+       ↓
+   __________
+       ↓
+Attention Output
+
+#########################################################################################
+The correct answers are:
+
+Input Embeddings
+       ↓
+      Q K V
+       ↓
+      Q × Kᵀ
+       ↓
+ Attention Scores
+       ↓
+    Softmax
+       ↓
+ Attention Weights × Values
+       ↓
+Attention Output
+✅ Blanks
+Attention Scores
+Attention Weights × Values
+🧠 Remember the logic
+Q × Kᵀ
+   ↓
+"How relevant are these tokens?"
+   ↓
+Attention Scores
+   ↓
+Softmax
+   ↓
+"How much attention should each token receive?"
+   ↓
+Attention Weights
+   ↓
+Multiply by Values
+   ↓
+Useful combined information
+
+🔥 One-line memory trick:
+
+Q × Kᵀ finds relevance → Softmax creates weights → Weights × V creates the attention output.

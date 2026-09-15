@@ -1,0 +1,49 @@
+# TASK 2 — Traditional ML vs Generative AI
+
+# The main difference is what the AI does with the information it learns.
+
+# Feature	Traditional ML	Generative AI
+# Main purpose	Predict, classify, or analyze	Create new content
+# Output	Prediction or decision	New text, image, audio, code, etc.
+# Example	Predict whether a student will pass	Generate a study plan for the student
+# Input	Structured data is commonly used	Often accepts natural-language prompts
+# Typical tasks	Classification, regression, prediction	Text generation, image generation, code generation
+# Example model	Decision Tree, Random Forest, Logistic Regression	GPT, Gemini, Claude, image-generation models
+# 🔹 Traditional ML
+
+# Traditional Machine Learning learns patterns from existing data and uses them to make predictions or decisions.
+
+# Example:
+
+# Study Hours + Attendance + Previous Score
+#                 ↓
+#         ML Model
+#                 ↓
+#         Pass / Fail
+
+# The model is predicting an outcome.
+
+# 🔹 Generative AI
+
+# Generative AI learns patterns from large datasets and uses them to generate new content based on a prompt.
+
+# Example:
+
+# "Create a Java program for student management"
+#                 ↓
+#           Generative AI
+#                 ↓
+#        New Java Program
+
+# The model is creating something.
+
+# ⭐ Easy way to remember
+
+# Traditional ML → "What will happen?"
+# Generative AI → "Create something for me."
+
+# For your AI Engineer roadmap, think of it this way:
+
+# Traditional ML: Data → Prediction
+
+# Generative AI: Prompt → Generated Content

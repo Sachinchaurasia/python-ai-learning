@@ -1,0 +1,38 @@
+🧠 TASK 1 — What is an LLM?
+
+LLM stands for Large Language Model.
+
+In my own words:
+
+An LLM is an AI model trained on a very large amount of text so that it can understand patterns in language and generate human-like text. It can answer questions, summarize information, write code, translate languages, and perform many other language-related tasks.
+
+🔹 Breaking down the name
+
+Large → It is trained using a huge amount of data and generally has many parameters.
+
+Language → It is designed to work with human language such as English, Hindi, etc., as well as programming languages.
+
+Model → It is a trained mathematical/AI system that learns patterns from data.
+
+Simple flow
+Large Amount of Text
+        ↓
+   Training
+        ↓
+  LLM learns
+language patterns
+        ↓
+      Prompt
+        ↓
+      LLM
+        ↓
+   Generated Text
+⭐ Most important connection
+
+Remember what you learned in the previous task:
+
+An LLM generates text by predicting what comes next, one token at a time.
+
+So, at a basic level:
+
+LLM = A language-focused AI model that learns patterns from huge amounts of data and generates text by predicting tokens step-by-step.

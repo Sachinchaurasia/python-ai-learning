@@ -1,0 +1,9 @@
+# TASK 3 — 5 Examples of Content Generative AI Can Create
+# 📝 Text — Articles, emails, stories, summaries, etc.
+# 🖼️ Images — Illustrations, posters, logos, and artwork.
+# 💻 Code — Java, Python, JavaScript, SQL, etc.
+# 🎵 Audio/Music — Music, sound effects, and AI-generated voices.
+# 🎬 Video — Short videos, animations, and visual scenes.
+# ⭐ Simple answer
+
+# Generative AI can create text, images, code, audio/music, and videos from a user's instructions or prompt.

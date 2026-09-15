@@ -1,0 +1,38 @@
+✅ TASK 1 — What is Generative AI?
+
+Generative AI is a type of Artificial Intelligence that can create new content by learning patterns from existing data.
+
+Unlike traditional AI, which mainly analyzes data or makes predictions, Generative AI can generate things such as:
+
+📝 Text — answers, articles, emails, code
+🖼️ Images — pictures, designs, artwork
+🎵 Audio/Music — songs, voices, sound
+🎬 Video — generated or edited video
+💻 Code — programs and software
+Simple example
+
+If you ask an AI:
+
+"Write a Java program to calculate the factorial of a number."
+
+A Generative AI model can generate the Java code for you.
+
+🧠 How does it work?
+
+Generative AI learns patterns from a large amount of training data. After learning those patterns, it can use them to produce new content that wasn't simply copied from one particular training example.
+
+Simple flow:
+
+Large Amount of Data
+        ↓
+   AI Model Learns
+     Patterns
+        ↓
+    User Prompt
+        ↓
+ Generative AI Model
+        ↓
+   New Content
+⭐ In one sentence
+
+Generative AI is AI that learns patterns from existing data and uses those patterns to generate new content such as text, images, audio, video, and code.

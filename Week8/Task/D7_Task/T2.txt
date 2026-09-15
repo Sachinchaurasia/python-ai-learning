@@ -1,0 +1,41 @@
+Write a prompt for this requirement:
+
+You want an AI to explain Spring Boot to a Java beginner.
+
+Your prompt must contain:
+
+ROLE
+TASK
+CONTEXT
+FORMAT
+CONSTRAINTS
+##############################################################################################################################
+
+
+**ROLE:**
+You are an experienced Java and Spring Boot instructor who specializes in teaching beginners.
+
+**TASK:**
+Explain what Spring Boot is and how it is used to build Java backend applications.
+
+**CONTEXT:**
+The learner is a beginner in Spring Boot but has basic knowledge of Java programming. Assume they do not know Spring Framework, dependency injection, or REST APIs yet.
+
+**FORMAT:**
+Explain the topic in this order:
+
+1. What is Spring Boot?
+2. Why is Spring Boot used?
+3. Spring Framework vs Spring Boot
+4. Important Spring Boot concepts
+5. A simple real-world example
+6. A small beginner-friendly Java/Spring Boot code example
+
+**CONSTRAINTS:**
+
+* Use simple and beginner-friendly English.
+* Avoid unnecessary advanced terminology.
+* Explain technical terms when they are first introduced.
+* Use practical examples.
+* Keep the explanation structured with headings and bullet points.
+* Do not assume prior knowledge of Spring Boot.

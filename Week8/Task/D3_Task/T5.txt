@@ -1,0 +1,67 @@
+🧠 TASK 5 — What is a Token ID?
+
+A token ID is a unique numerical identifier assigned to a token by a tokenizer.
+
+The LLM uses these numbers to represent tokens so that the neural network can process them.
+
+🔹 Simple example
+
+Suppose a tokenizer has a vocabulary like:
+
+Token          Token ID
+-----------------------
+"Java"    →      1527
+" is"     →       318
+" code"   →      4921
+"."       →        13
+
+So:
+
+"Java is code."
+       ↓
+Tokenization
+       ↓
+"Java" | " is" | " code" | "."
+       ↓
+Token IDs
+       ↓
+1527 | 318 | 4921 | 13
+
+These numbers are just illustrative—actual token IDs depend on the tokenizer/model.
+
+🔥 Why do we need Token IDs?
+
+A neural network performs mathematical operations on numbers.
+
+So the LLM's process is roughly:
+
+Text
+ ↓
+Tokens
+ ↓
+Token IDs
+ ↓
+Embeddings
+ ↓
+Neural Network
+ ↓
+Prediction
+⚠️ Important distinction
+
+Don't confuse:
+
+Token
+
+"Java"
+
+with:
+
+Token ID
+
+1527
+
+The token is the text unit; the token ID is its numeric identifier in the tokenizer's vocabulary.
+
+⭐ One-line answer
+
+A token ID is the numerical identifier that represents a particular token in an LLM's vocabulary, allowing the model to process text numerically.

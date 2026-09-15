@@ -1,0 +1,93 @@
+🔥 TASK 7 — Similar Meanings → Similar Embeddings
+
+Similar meanings can produce similar embedding representations.
+
+The statement means:
+
+When two pieces of text have similar meanings, their learned embedding vectors can also be similar, even if the actual words are different.
+
+🔹 Example
+
+Consider these two sentences:
+
+"How can I learn Python?"
+
+and:
+
+"What is the best way to study Python?"
+
+The wording is different, but the meaning is quite similar.
+
+Their embeddings might look conceptually like:
+
+Sentence 1
+   ↓
+[0.21, 0.73, -0.15, 0.42, ...]
+
+Sentence 2
+   ↓
+[0.23, 0.70, -0.17, 0.40, ...]
+
+The vectors are relatively close in embedding space.
+
+🔹 Different meaning
+
+Now consider:
+
+"I like eating apples."
+
+Its embedding would generally be different:
+
+[0.82, -0.31, 0.55, -0.72, ...]
+
+Conceptually:
+
+       Similar meaning
+      ↙              ↘
+"How can I learn?"   "Best way to study?"
+       ↓                  ↓
+   Similar vectors
+          ↘            ↙
+        Embedding Space
+
+
+"How can I learn Python?"
+             ↓
+
+          ● ●
+       Similar region
+
+                         ●
+                 "I like eating apples."
+🧠 Why is this useful?
+
+This is what makes semantic search possible.
+
+A user might search:
+
+"How do I learn Python?"
+
+while a document contains:
+
+"Python beginner learning guide"
+
+The exact words aren't identical, but their embeddings can be close enough for the search system to recognize that they are related.
+
+⭐ Important clarification
+
+"Similar embeddings" does not mean that every similar sentence gets exactly the same vector.
+
+Instead:
+
+The learned representation tends to place semantically related content closer together than unrelated content.
+
+🔥 Remember
+Similar meaning
+      ↓
+Similar embedding representations
+      ↓
+Can measure similarity
+      ↓
+Semantic Search / RAG / Recommendations
+
+You've now understood the core idea behind embeddings. The next major step is understanding Transformers, which use these representations to process context and relationships between tokens.

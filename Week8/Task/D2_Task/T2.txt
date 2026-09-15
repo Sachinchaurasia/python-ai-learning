@@ -1,0 +1,69 @@
+🧠 TASK 2 — Meaning of Large Language Model
+
+Let's understand each word separately.
+
+1️⃣ LARGE
+
+Large refers mainly to the scale of the model and training process.
+
+An LLM can have:
+
+A very large number of parameters
+Huge amounts of training data
+Significant computing resources used during training
+
+Think:
+
+Small Model → Less data + fewer parameters
+      ↓
+Large Model → More data + many parameters
+2️⃣ LANGUAGE
+
+Language means the model is designed to work with human language.
+
+It can process and generate things such as:
+
+English
+Hindi
+French
+Spanish
+Java
+Python
+SQL
+
+It learns patterns such as grammar, vocabulary, relationships between words, and context.
+
+3️⃣ MODEL
+
+A model is the trained mathematical system that has learned patterns from data.
+
+For example:
+
+Training Data
+     ↓
+Learning Process
+     ↓
+Trained Model
+     ↓
+Prompt
+     ↓
+Prediction / Generated Output
+
+The model doesn't simply store a collection of ready-made answers. It uses learned patterns to predict and generate an appropriate output.
+
+⭐ Put all three together
+LARGE
+  ↓
+Large scale / many parameters / lots of training data
+
+LANGUAGE
+  ↓
+Works with human language
+
+MODEL
+  ↓
+Trained AI system that learns patterns
+
+Therefore:
+
+Large Language Model = a large-scale AI model trained to understand and generate language.

@@ -1,0 +1,64 @@
+🧠 TASK 3 — Thinking Challenge
+
+Consider:
+
+"The bank was crowded because many people wanted to deposit money."
+
+Which words should have a strong relationship with "bank"?
+
+Explain why attention would be useful here.
+
+######################################################################################
+🧠 TASK 3 — Thinking Challenge
+
+For the sentence:
+
+"The bank was crowded because many people wanted to deposit money."
+
+The word "bank" should have a strong relationship with:
+
+people
+deposit
+money
+crowded
+🧠 Why?
+
+The word "deposit" is especially important because it gives strong context that "bank" means a financial institution, rather than a river bank.
+
+For example:
+
+"The bank was crowded because many people wanted to deposit money."
+                          ↑
+                       "bank"
+                          ↓
+             ┌────────────┼────────────┐
+             ↓            ↓            ↓
+          people       deposit       money
+             \            |            /
+              └──── context ──────────┘
+🔥 Why is attention useful?
+
+Attention allows the Transformer to look at the other words in the sentence and determine which ones are important for understanding "bank".
+
+Without context:
+
+bank
+
+could mean:
+
+🏦 financial institution
+🌊 river bank
+
+With attention, the model sees:
+
+deposit + money + people
+
+and can infer:
+
+"bank" → financial institution
+
+✅ In one sentence
+
+Attention is useful because it allows the model to connect "bank" with contextual words such as "deposit" and "money", helping it understand the correct meaning of "bank".
+
+Excellent example of self-attention: the meaning of one token depends on its relationship with other tokens in the sentence.

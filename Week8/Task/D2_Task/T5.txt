@@ -1,0 +1,117 @@
+🔥 TASK 5 — What are Parameters in a Neural Network/LLM?
+
+This connects directly to what you learned in Week 7 about weights.
+
+1️⃣ Parameters are values the model learns
+
+In a neural network, parameters are mainly weights and biases that are adjusted during training.
+
+You already learned that a neuron can roughly do:
+
+Input × Weight + Bias
+        ↓
+   Activation
+        ↓
+      Output
+
+For example:
+
+Input = 5
+Weight = 0.8
+Bias = 0.2
+
+5 × 0.8 + 0.2
+      ↓
+     4.2
+
+During training, the model changes the weight and bias to improve its predictions.
+
+2️⃣ Connection to Week 7
+
+Remember your neural network:
+
+Input Layer
+     ↓
+Dense(8, ReLU)
+     ↓
+Dense(4, ReLU)
+     ↓
+Dense(1, Sigmoid)
+     ↓
+Output
+
+Each Dense layer contains learnable parameters.
+
+For example:
+
+Dense(8, activation="relu")
+
+has:
+
+Weights
+Biases
+
+These are parameters that the neural network learns during training.
+
+3️⃣ What about an LLM?
+
+An LLM is also a neural network, but it can be extremely large.
+
+It may contain millions, billions, or even more parameters.
+
+During training:
+
+Training Data
+      ↓
+     LLM
+      ↓
+Prediction
+      ↓
+Calculate Error
+      ↓
+Update Parameters
+      ↓
+Repeat
+
+The parameters gradually adjust so that the model becomes better at predicting the next token.
+
+🧠 Simple analogy
+
+Think of parameters as the model's learned numerical settings.
+
+Before Training
+Weight = random value
+       ↓
+     TRAINING
+       ↓
+After Training
+Weight = learned value
+
+The model doesn't manually write rules like:
+
+"If the user says X, always answer Y."
+
+Instead, it learns numerical patterns through its parameters.
+
+⭐ Most important connection
+
+The weights you learned in Week 7 are parameters. In a neural network, parameters generally include weights and biases. An LLM has a huge number of these learned parameters, which are adjusted during training and then used during inference to generate predictions.
+
+🔥 Remember this
+Neural Network
+      ↓
+Parameters
+      ↓
+Weights + Biases
+      ↓
+Learned during Training
+      ↓
+Used during Inference
+
+So when you hear:
+
+"This LLM has billions of parameters."
+
+Think:
+
+"It has billions of learned numerical values—primarily weights and biases—that help the neural network make predictions."

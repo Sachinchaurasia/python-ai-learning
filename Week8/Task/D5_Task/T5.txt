@@ -1,0 +1,17 @@
+1. Transformer = neural-network architecture
+
+2. Attention = key mechanism
+
+3. Self-attention = tokens interact with other tokens
+
+4. Positional information = helps represent token order
+
+5. Transformer Block =
+   Attention + Feed Forward + supporting components
+
+6. GPT-style LLMs = decoder-only Transformer architecture
+
+7. Transformers = foundation of modern LLMs
+🧠 One-line memory trick
+
+"Embeddings give the model representations; Transformers use attention to process those representations in context."

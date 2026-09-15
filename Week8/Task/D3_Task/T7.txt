@@ -1,0 +1,39 @@
+Step 1 — Make sure Transformers is installed
+
+In your terminal:
+
+pip install transformers
+Step 2 — Run your code
+from transformers import AutoTokenizer
+
+tokenizer = AutoTokenizer.from_pretrained(
+    "bert-base-uncased"
+)
+
+text = "I love Python and Machine Learning."
+
+tokens = tokenizer.tokenize(text)
+
+print(tokens)
+
+token_ids = tokenizer.convert_tokens_to_ids(tokens)
+
+print(token_ids)
+
+for token, token_id in zip(tokens, token_ids):
+    print(token, "→", token_id)
+Step 3 — Send me the complete output
+
+It should look approximately like this:
+
+['i', 'love', 'python', 'and', 'machine', 'learning', '.']
+
+[...., ...., ...., ...., ...., ...., ....]
+
+i → ....
+love → ....
+python → ....
+and → ....
+machine → ....
+learning → ....
+. → ....

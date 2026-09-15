@@ -1,0 +1,250 @@
+1. What is a Prompt?
+
+A prompt is the input or instruction that we give to an AI model to tell it what we want.
+
+Example
+Explain machine learning in simple words.
+
+Here:
+
+User
+ ↓
+Prompt
+ ↓
+LLM
+ ↓
+Response
+
+A prompt can contain:
+
+A question
+An instruction
+Context
+Examples
+Output requirements
+Example
+Explain attention mechanisms in 5 bullet points
+for a beginner.
+
+The instruction tells the model what to do and how to respond.
+
+2. What is Prompt Engineering?
+
+Prompt engineering is the process of designing and improving prompts to get more useful, accurate, and consistent results from an AI model.
+
+Compare:
+
+❌ Weak prompt
+Tell me about Python.
+✅ Better prompt
+Explain Python to a beginner in simple language.
+Give 5 important concepts and one practical example
+for each concept.
+
+The second prompt provides:
+
+Task + Audience + Format + Constraints
+
+Therefore, the model has clearer instructions.
+
+🧠 Simple definition
+
+Prompt engineering = designing effective instructions for an AI model.
+
+3. What is Zero-Shot Prompting?
+
+Zero-shot prompting means asking an AI model to perform a task without providing examples.
+
+Example:
+
+Classify this review as Positive or Negative:
+
+"I really enjoyed this movie."
+
+You didn't provide any examples.
+
+The model has to understand the task based on the instruction alone.
+
+Instruction
+     ↓
+No examples
+     ↓
+LLM
+     ↓
+Answer
+
+That's zero-shot.
+
+4. What is Few-Shot Prompting?
+
+Few-shot prompting means giving the model a small number of examples before asking it to perform the task.
+
+Example:
+
+Review: "I loved this movie."
+Sentiment: Positive
+
+Review: "This movie was terrible."
+Sentiment: Negative
+
+Review: "The acting was excellent."
+Sentiment:
+
+The model can identify the pattern:
+
+Examples
+   ↓
+Understand pattern
+   ↓
+New input
+   ↓
+Prediction
+
+This is called few-shot prompting.
+
+Comparison
+Method	Examples provided?
+Zero-shot	❌ No
+Few-shot	✅ A few
+5. What is a Prompt Template?
+
+A prompt template is a reusable prompt structure containing variables that can be replaced with different values.
+
+For example:
+
+Explain {TOPIC} in simple language.
+Give {NUMBER} examples.
+
+We can substitute:
+
+TOPIC = Machine Learning
+NUMBER = 3
+
+Result:
+
+Explain Machine Learning in simple language.
+Give 3 examples.
+🧠 Why are templates useful?
+
+Imagine your AI application receives 10,000 questions.
+
+Instead of manually creating prompts:
+
+Question 1 → prompt
+Question 2 → prompt
+Question 3 → prompt
+...
+
+you can create one reusable template:
+
+Answer the following question:
+{QUESTION}
+
+Use simple language.
+
+Then your application dynamically inserts the question.
+
+This is very important when building production AI applications.
+
+6. Why is Structured Output Useful in an AI Application?
+
+LLMs naturally produce human-readable text.
+
+But software applications often need predictable data.
+
+For example, instead of:
+
+The candidate has 3 years of Java experience
+and knows Spring Boot.
+
+your application might need:
+
+{
+  "name": "Sachin",
+  "experience_years": 3,
+  "skills": [
+    "Java",
+    "Spring Boot"
+  ]
+}
+
+Now your program can easily process the response.
+
+Without structured output
+LLM
+ ↓
+Free-form text
+ ↓
+Difficult for software to process
+With structured output
+LLM
+ ↓
+JSON
+ ↓
+Backend application
+ ↓
+Database / API / UI
+🔥 Example AI application
+
+Imagine your FTR monitoring system receives a research report.
+
+An LLM could extract:
+
+{
+  "pi_name": "...",
+  "project_title": "...",
+  "scheme": "...",
+  "completion_date": "...",
+  "publications": 5,
+  "patents": 2
+}
+
+Your Java/Spring Boot application could then store this information directly in a database.
+
+That's why structured output is extremely useful for AI Engineering.
+
+🧠 Quick Revision
+Concept	Meaning
+Prompt	Input/instruction given to an AI model
+Prompt Engineering	Designing effective prompts
+Zero-shot	Task with no examples
+Few-shot	Task with a few examples
+Prompt Template	Reusable prompt with variables
+Structured Output	Predictable format such as JSON
+🔥 The AI Engineer Connection
+
+These concepts become important when you move from:
+
+Learning AI
+    ↓
+Using an LLM
+    ↓
+Building an AI Application
+
+For example:
+
+User
+ ↓
+Prompt Template
+ ↓
+LLM
+ ↓
+Structured JSON
+ ↓
+Spring Boot API
+ ↓
+Database
+ ↓
+Frontend
+
+This is exactly where your Java/Spring Boot background + AI learning starts becoming useful for AI Engineering.
+
+🎯 Week 8 Final Challenge
+
+Try answering these in your own words:
+
+What is a prompt?
+What is the difference between zero-shot and few-shot prompting?
+Why would an AI application use a prompt template?
+Why is JSON/structured output better than free-form text for software?
+Give one example of a good prompt for an AI application.

@@ -1,0 +1,120 @@
+🔥 TASK 5 — THINK LIKE AN AI ENGINEER
+
+Suppose a user enters:
+
+What is attention in Transformers?
+
+Your application should dynamically create a prompt.
+
+Explain:
+
+What part is fixed?
+What part changes according to the user?
+Why are prompt templates useful for AI applications?
+
+#########################################################################################################################
+
+🔥 TASK 5 — Think Like an AI Engineer
+
+If the user enters:
+
+What is attention in Transformers?
+
+your application dynamically inserts that input into the prompt.
+
+1. What part is fixed?
+
+The instructions and structure of the prompt are fixed.
+
+For example:
+
+You are an AI instructor.
+
+Explain [TOPIC] to a beginner.
+
+Include:
+1. Definition
+2. Real-world example
+3. Important concepts
+4. Summary
+
+Use simple English.
+
+Everything except [TOPIC] stays the same.
+
+2. What part changes according to the user?
+
+The topic/user input changes.
+
+Here:
+
+What is attention in Transformers?
+
+gets inserted into:
+
+f"""
+Explain {topic} to a beginner.
+"""
+
+So the final prompt becomes:
+
+You are an AI instructor.
+
+Explain What is attention in Transformers? to a beginner.
+
+Include:
+1. Definition
+2. Real-world example
+3. Important concepts
+4. Summary
+
+Use simple English.
+🧠 In simple terms
+Fixed Prompt Template
+        +
+User Input
+        ↓
+Dynamic Prompt
+3. Why are prompt templates useful for AI applications?
+
+Prompt templates allow developers to reuse the same instructions for many different user inputs.
+
+Without a template, you might manually create:
+
+Explain Transformers...
+Explain Embeddings...
+Explain Machine Learning...
+Explain Attention...
+
+With a template:
+
+Explain {topic} to a beginner.
+
+The application can automatically handle:
+
+User 1 → Transformers
+User 2 → Embeddings
+User 3 → Machine Learning
+User 4 → Attention
+🚀 AI Engineering connection
+
+This is important because real AI applications may handle thousands or millions of requests.
+
+A typical application can work like:
+
+User Input
+    ↓
+Prompt Template
+    ↓
+Dynamic Prompt
+    ↓
+LLM
+    ↓
+AI Response
+✅ Final answer
+
+Fixed: The role, instructions, output format, and constraints.
+Changes: The user's topic/input.
+Why templates are useful: They provide a reusable, consistent structure while allowing applications to dynamically insert different user inputs.
+
+🔥 This is the basic idea behind prompt engineering in production AI applications.

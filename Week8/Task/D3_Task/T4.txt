@@ -1,0 +1,69 @@
+🧠 TASK 4 — Why does an LLM convert tokens into numbers?
+
+The main reason is:
+
+Neural networks work with numerical values, not directly with words or text.
+
+An LLM cannot directly perform mathematical operations on a token like:
+
+"Java"
+
+So the tokenizer assigns each token a numeric ID.
+
+For example, purely as an illustration:
+
+"Java"        → 1527
+" is"         → 318
+" powerful"   → 4921
+"."           → 13
+
+These numbers are then processed by the neural network.
+
+🔹 The basic flow
+Human Text
+    ↓
+"Java is powerful."
+    ↓
+Tokenization
+    ↓
+"Java" | " is" | " powerful" | "."
+    ↓
+Token IDs
+    ↓
+1527 | 318 | 4921 | 13
+    ↓
+Neural Network
+    ↓
+Predictions
+⚠️ Important distinction
+
+The token ID itself is not the meaning of the word.
+
+For example:
+
+"Java" → 1527
+
+does not mean that 1527 mathematically represents the meaning of Java.
+
+The token IDs are used to look up embeddings, which are numerical vectors that the neural network can work with.
+
+You'll learn about embeddings in Week 8 Day 4.
+
+⭐ Simple answer
+
+LLMs convert tokens into numbers because neural networks perform mathematical operations on numerical data. Token IDs allow the model to process text, and those IDs are then transformed into numerical representations called embeddings that the neural network can use.
+
+🔥 Remember this flow
+Text
+ ↓
+Tokens
+ ↓
+Token IDs
+ ↓
+Embeddings
+ ↓
+Neural Network
+ ↓
+Prediction
+
+This flow will be very important when we move from Tokenization → Embeddings → Transformers.

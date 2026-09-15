@@ -1,0 +1,53 @@
+🧠 TASK 2 — What is Tokenization?
+
+Tokenization is the process of breaking text into smaller pieces called tokens so that an LLM can process the text.
+
+🔹 Example
+
+Suppose we have:
+
+"Java is powerful."
+
+A tokenizer might break it into:
+
+"Java" | " is" | " powerful" | "."
+
+These individual pieces are called tokens.
+
+🔹 What happens next?
+
+The LLM doesn't directly work with the raw text. The general process is:
+
+Human Text
+    ↓
+Tokenization
+    ↓
+Tokens
+    ↓
+Token IDs
+    ↓
+LLM
+    ↓
+Predicted Tokens
+    ↓
+Generated Text
+
+For example:
+
+"Java is a programming language"
+              ↓
+          Tokenization
+              ↓
+"Java" | " is" | " a" | " programming" | " language"
+
+The tokenizer then maps these tokens to numerical IDs, because neural networks work with numbers rather than raw text.
+
+🔥 Important point
+
+Token ≠ Tokenization
+
+Token → one piece of text.
+Tokenization → the process of splitting text into those pieces.
+⭐ Simple definition
+
+Tokenization is the process of converting text into smaller units called tokens, which can then be converted into numbers and processed by an LLM.
