@@ -1,0 +1,89 @@
+TASK 3 — Think Like an AI Engineer
+
+Suppose the application receives:
+
+"What is attention in Transformers?"
+1. What does your Python application do first?
+
+The Python application receives the user's question and prepares an API request.
+
+It may also add a system instruction/prompt telling the LLM how to answer.
+
+For example:
+
+User Question:
+"What is attention in Transformers?"
+2. What information does it send to the LLM?
+
+The application sends information such as:
+
+→ API key / authentication
+→ Model name
+→ User's question
+→ Instructions/prompt
+
+Conceptually:
+
+Model: selected LLM
+Prompt: "What is attention in Transformers?"
+3. What does the LLM return?
+
+The LLM processes the prompt and generates a text response.
+
+For example:
+
+"Attention is a mechanism in Transformers
+that allows the model to determine which parts
+of the input are most relevant to each other..."
+
+That generated content comes back to your application as part of the API response.
+
+4. What does your application do with the response?
+
+Your Python application receives the API response, extracts the generated text, and displays it to the user.
+
+LLM
+ ↓
+API Response
+ ↓
+Python Application
+ ↓
+Extract generated text
+ ↓
+Display answer
+ ↓
+User
+🚀 Complete AI Engineer flow
+User
+ │
+ │ "What is attention in Transformers?"
+ ↓
+Python Application
+ │
+ │ Build API request
+ │ + model
+ │ + prompt
+ │ + authentication
+ ↓
+LLM API
+ │
+ ↓
+LLM
+ │
+ │ Generate answer
+ ↓
+API Response
+ │
+ ↓
+Python Application
+ │
+ │ Extract response
+ │
+ ↓
+User
+⭐ AI Engineer mindset
+
+The important thing is that your Python application is the controller/orchestrator.
+
+It takes the user's input → constructs the request → calls the LLM → receives the response → processes it → gives the result back to the user.
+

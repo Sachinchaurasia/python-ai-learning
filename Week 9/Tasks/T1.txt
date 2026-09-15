@@ -1,0 +1,341 @@
+1. What is an API?
+
+API = Application Programming Interface
+
+An API is a way for one software application to communicate with another software application.
+
+Think of it like a waiter in a restaurant:
+
+Your Application
+      ↓
+    API
+      ↓
+Another Service
+      ↓
+    API
+      ↓
+Your Application
+
+For example, your Python application may want an AI service to answer:
+
+"Explain attention in Transformers."
+
+Your application sends this request through an API, and the AI service sends the answer back.
+
+Simple definition
+
+An API is a communication interface that allows one application to request data or functionality from another application.
+
+2. What is an LLM API?
+
+An LLM API allows your application to communicate with a Large Language Model.
+
+For example:
+
+Your Python Application
+        ↓
+    LLM API
+        ↓
+   AI Model
+        ↓
+Generated Response
+        ↓
+Your Python Application
+
+Your application might send:
+
+User:
+"What is machine learning?"
+
+The LLM API sends this request to the model.
+
+The model generates:
+
+"Machine learning is a branch of AI..."
+
+And the API returns that response to your application.
+
+Why is this important for an AI Engineer?
+
+Instead of building and training a huge LLM yourself, you can integrate an existing model into your application.
+
+For example:
+
+response = client.responses.create(
+    model="some-model",
+    input="Explain machine learning"
+)
+
+Your application can then use the model's output.
+
+3. What is the difference between an API request and response?
+
+This is one of the most important concepts.
+
+API Request
+
+The request is what your application sends to the API.
+
+Example:
+
+Request
+   ↓
+Model: some-model
+Input: "What is an LLM?"
+
+It can contain things such as:
+
+model name
+user input
+instructions
+parameters
+authentication information
+API Response
+
+The response is what the API sends back to your application.
+
+Example:
+
+Response
+   ↓
+"An LLM is a Large Language Model..."
+
+So:
+
+APPLICATION
+     │
+     │ API REQUEST
+     ↓
+    LLM
+     │
+     │ API RESPONSE
+     ↓
+APPLICATION
+Easy way to remember
+
+Request = What I ask
+
+Response = What I get
+
+4. What is an API key?
+
+An API key is a secret credential used to authenticate your application with an API service.
+
+Think of it like a password or access token.
+
+For example:
+
+Python Application
+       │
+       │ API Key
+       ↓
+   LLM API
+       │
+       ↓
+Access granted
+
+A service can use the key to determine:
+
+which account is making the request
+whether the application is authorized
+usage/billing associated with the account
+whether the key is valid
+
+A simplified example:
+
+api_key = "YOUR_SECRET_KEY"
+
+The important part is:
+
+API keys are sensitive credentials.
+
+5. Why should an API key not be stored directly in GitHub code?
+
+This is extremely important for your Week 9 projects.
+
+Suppose you write:
+
+api_key = "sk-xxxxxxxxxxxxxxxx"
+
+and then upload the code to GitHub.
+
+Now the key may become accessible to anyone who can see that repository.
+
+Someone could potentially use your API key and consume your API quota or incur charges.
+
+❌ Bad approach
+api_key = "MY_SECRET_API_KEY"
+
+client = SomeClient(api_key=api_key)
+
+Then:
+
+Python code
+     ↓
+GitHub
+     ↓
+Secret exposed ❌
+✅ Better approach
+
+Store the key in an environment variable.
+
+For example:
+
+OPENAI_API_KEY=your_secret_key
+
+Then Python reads it:
+
+import os
+
+api_key = os.getenv("OPENAI_API_KEY")
+
+Your code can safely be pushed to GitHub:
+
+GitHub
+   │
+   ├── Python code ✅
+   │
+   └── API key ❌
+
+You should also normally add your local .env file to .gitignore if you use one.
+
+AI Engineer rule
+
+Never hard-code API keys, passwords, database credentials, or other secrets into source code that may be committed to Git.
+
+This becomes especially important when you start deploying your LLM projects.
+
+6. What role does the model name play in an LLM API request?
+
+The model name tells the API which AI model you want to use.
+
+Think about it like selecting a particular engine.
+
+Your Application
+       │
+       │
+       ├── Model A
+       │
+       ├── Model B
+       │
+       └── Model C
+
+For example, an API request may contain:
+
+response = client.responses.create(
+    model="model-name",
+    input="Explain embeddings"
+)
+
+Here:
+
+model="model-name"
+       ↑
+   Model selection
+
+The model name can affect things such as:
+
+capabilities
+reasoning ability
+speed
+cost
+context capacity
+supported features
+
+So the API needs to know:
+
+"Which model should process this request?"
+
+🧠 Put all 6 concepts together
+
+Imagine you're building your Week 9 LLM application.
+
+The architecture looks like this:
+
+                 YOUR AI APPLICATION
+                         │
+                         │
+                 API REQUEST
+                         │
+             ┌───────────┴───────────┐
+             │                       │
+          API Key                Model Name
+             │                       │
+             └───────────┬───────────┘
+                         │
+                         ↓
+                      LLM API
+                         │
+                         ↓
+                       LLM
+                         │
+                         ↓
+                 API RESPONSE
+                         │
+                         ↓
+                 YOUR APPLICATION
+
+For example:
+
+User enters:
+
+"What are embeddings?"
+
+Your application creates an API request:
+
+Model → selected LLM
+Input → "What are embeddings?"
+Authentication → API key
+
+The API sends it to the selected model.
+
+The model generates an answer.
+
+The API returns the response.
+
+Your application displays:
+
+Embeddings are numerical representations
+of data such as text...
+🎯 Week 9 mental model
+
+Remember this simple flow:
+
+USER
+ ↓
+YOUR APPLICATION
+ ↓
+API REQUEST
+ ↓
+LLM API
+ ↓
+SELECTED MODEL
+ ↓
+GENERATED OUTPUT
+ ↓
+API RESPONSE
+ ↓
+YOUR APPLICATION
+ ↓
+USER
+
+And remember these six definitions:
+
+Concept	Simple meaning
+API	Communication interface between software
+LLM API	Interface for communicating with an LLM
+Request	Data/instructions sent to the API
+Response	Data returned by the API
+API Key	Secret credential used for authentication
+Model Name	Identifies which LLM should process the request
+🔥 Your next AI Engineer step
+
+Now that you understand the concepts, the natural progression for Week 9 is:
+
+Day 1 → LLM APIs fundamentals ✅
+Next → API key + environment variables + .env
+Then → Make your first real LLM API call
+Then → Handle the API response in Python
+Then → Build a reusable LLM client
+Then → Connect it to your application
+Then → Mini Project: LLM-powered application

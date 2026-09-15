@@ -1,0 +1,39 @@
+Draw the Architecture, fill the blanks like this:
+
+User
+ ↓
+Your Application
+ ↓
+LLM API
+ ↓
+LLM
+ ↓
+API Response
+ ↓
+User
+🧠 What each step means
+User → enters a question.
+Your Application → receives the user's input.
+LLM API → sends the request to the AI model.
+LLM → processes the input and generates an answer.
+API Response → sends the generated answer back.
+User → sees the final answer.
+🎯 Your AI Engineer architecture
+User
+  │
+  ↓
+Your AI Application
+  │
+  ↓
+LLM API
+  │
+  ↓
+LLM
+  │
+  ↓
+API Response
+  │
+  ↓
+User
+
+Key idea: Your application does not directly talk to the LLM. It communicates with the LLM through the LLM API.
