@@ -1,0 +1,147 @@
+1. What is an API key?
+
+An API key is a secret credential that identifies and authenticates your application when it communicates with an API.
+
+Think of it like a password for accessing an API service.
+
+Your Python App
+      ↓
+  API Key
+      ↓
+    API
+2. Why should an API key never be hardcoded?
+
+Because if you write the key directly in your Python code:
+
+api_key = "MY_SECRET_KEY"
+
+and push that code to GitHub, the secret could be exposed.
+
+Someone could potentially use your key and consume your API quota or incur charges.
+
+❌ Don't do:
+
+api_key = "real-secret-key"
+
+✅ Instead:
+
+api_key = os.getenv("OPENAI_API_KEY")
+3. What is an environment variable?
+
+An environment variable is a value stored outside your source code that your application can access while it is running.
+
+For example:
+
+OPENAI_API_KEY=your_secret_key
+
+Your Python program can retrieve it with:
+
+os.getenv("OPENAI_API_KEY")
+
+The main benefit is that your code doesn't need to contain the secret directly.
+
+4. What is a .env file?
+
+A .env file is a simple text file commonly used to store environment variables/configuration values for local development.
+
+Example:
+
+OPENAI_API_KEY=your_secret_key
+
+Then Python can load those values using the python-dotenv package.
+
+Your structure:
+
+Week9_Day2
+│
+├── Week9_day2_security.py
+├── .env
+└── .gitignore
+5. Why do we use .gitignore?
+
+.gitignore tells Git which files it should not track.
+
+For your project:
+
+.env
+
+means:
+
+Don't include the .env file when tracking files with Git.
+
+So:
+
+.env          → 🔒 Don't push
+.gitignore    → ✅ Push
+Python code   → ✅ Push
+
+This is particularly important because your .env may contain API keys.
+
+6. What does os.getenv() do?
+
+os.getenv() retrieves the value of an environment variable.
+
+Example:
+
+import os
+
+api_key = os.getenv("OPENAI_API_KEY")
+
+If your environment contains:
+
+OPENAI_API_KEY=abc123
+
+then:
+
+api_key
+
+will contain:
+
+abc123
+
+If the variable doesn't exist, os.getenv() normally returns:
+
+None
+7. What does load_dotenv() do?
+
+load_dotenv() reads the .env file and loads its variables into the environment so that Python can access them through os.getenv().
+
+For example:
+
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+api_key = os.getenv("OPENAI_API_KEY")
+
+The flow is:
+
+.env
+ │
+ │ load_dotenv()
+ ↓
+Environment Variables
+ │
+ │ os.getenv()
+ ↓
+Python Application
+🧠 Remember this flow
+.env
+  ↓
+load_dotenv()
+  ↓
+Environment Variable
+  ↓
+os.getenv()
+  ↓
+Python Application
+  ↓
+LLM API
+
+Most important distinction:
+
+load_dotenv() loads the variables from .env.
+
+os.getenv() gets/reads a particular variable.
+

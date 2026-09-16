@@ -1,0 +1,79 @@
+TASK 4 — Think Like an AI Engineer
+Question 1: Is deleting the line from the latest version enough?
+
+No. ❌
+
+If the secret was already pushed to GitHub, simply deleting it from the latest version does not necessarily remove it from Git history.
+
+For example:
+
+Commit 1 → API_KEY = "my-secret-key"  ❌
+Commit 2 → API key removed             ✅
+
+The secret may still exist in the earlier commit.
+
+Question 2: What should you do with the exposed API key?
+
+Immediately revoke/rotate the exposed key. 🔐
+
+Do not continue using the compromised key.
+
+The basic response is:
+
+Exposed API key
+      ↓
+Revoke / deactivate it
+      ↓
+Generate a new key
+      ↓
+Update your application
+
+Even if you remove the secret from GitHub afterward, you should treat the old key as compromised.
+
+Question 3: Where should the new key be stored?
+
+Store the new key outside your source code, using an environment variable.
+
+For local development:
+
+.env
+
+For example:
+
+LLM_API_KEY=new-secret-key
+
+Then your Python application reads it:
+
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+api_key = os.getenv("LLM_API_KEY")
+
+And .gitignore contains:
+
+.env
+🚨 Complete AI Engineer security flow
+❌ Accidentally hardcoded key
+        ↓
+      GitHub
+        ↓
+   Key exposed
+        ↓
+  Revoke old key 🔐
+        ↓
+ Generate new key
+        ↓
+ Store in .env
+        ↓
+ Add .env to .gitignore
+        ↓
+ Python reads environment variable
+        ↓
+      LLM API
+⭐ The key lesson
+
+Once an API key has been exposed, deleting it from the current code does not make the key safe again. Revoke/rotate the key first, then move the replacement into secure configuration such as environment variables.
+
+This is an important real-world security habit for the LLM applications you'll build next.

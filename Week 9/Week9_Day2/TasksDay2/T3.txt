@@ -1,0 +1,57 @@
+TASK 3 — Git Security Check
+
+Now let's verify that your .env is protected before you push the Week 9 project.
+
+1. Go to your project folder
+
+In PowerShell:
+
+cd "C:\Users\HP\OneDrive\Desktop\Python AI-Learning\Week9_Practical_GenAI"
+2. Run:
+git status
+3. Check the output
+
+You should NOT see:
+
+.env
+
+You may see:
+
+Untracked files:
+    .gitignore
+    week9_day2_security.py
+
+That's fine. ✅
+
+You should not see:
+
+Untracked files:
+    .env
+
+If .env appears, don't run git add . or commit yet.
+
+4. Extra security verification
+
+Run:
+
+git check-ignore -v ".env"
+
+If .gitignore is working, you'll see something similar to:
+
+.gitignore:1:.env    .env
+
+That confirms:
+
+.env
+ ↓
+.gitignore
+ ↓
+Git ignores it 🔒
+✅ Your target result
+Week9_Practical_GenAI
+│
+├── week9_day2_security.py   → Git can track ✅
+├── .gitignore               → Git can track ✅
+└── .env                     → Git ignores 🔒
+
+Run git status now and paste the output here. I'll check it before you commit/push anything.

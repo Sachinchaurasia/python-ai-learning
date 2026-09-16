@@ -1,0 +1,95 @@
+Yes. Let's build Task 2 — Security Setup exactly as requested.
+
+📁 1. Create this folder structure
+
+Inside your Python AI-Learning directory:
+
+Week9_Practical_GenAI
+│
+├── week9_day2_security.py
+├── .env
+└── .gitignore
+🔐 2. .env
+
+Open .env and put only:
+
+LLM_API_KEY=test-secret-123
+
+This is your fake key, so it is safe for this exercise.
+
+🚫 3. .gitignore
+
+Put this inside .gitignore:
+
+.env
+
+This tells Git not to track your .env file.
+
+🐍 4. week9_day2_security.py
+
+Put this code inside the Python file:
+
+import os
+from dotenv import load_dotenv
+
+# Load variables from .env
+load_dotenv()
+
+# Read the API key
+api_key = os.getenv("LLM_API_KEY")
+
+# Check whether the key exists
+if api_key:
+    print("API key loaded successfully.")
+else:
+    print("API key not found.")
+Notice something important
+
+We do not write:
+
+print(api_key)
+
+because that would expose the secret.
+
+▶️ 5. Run the program
+
+Open PowerShell inside Week9_Practical_GenAI and run:
+
+python week9_day2_security.py
+
+Expected output:
+
+API key loaded successfully.
+
+It should NOT show:
+
+test-secret-123
+🔄 Complete flow
+.env
+│
+│ LLM_API_KEY=test-secret-123
+↓
+load_dotenv()
+│
+↓
+os.getenv("LLM_API_KEY")
+│
+↓
+Python application
+│
+↓
+Check if key exists
+│
+↓
+"API key loaded successfully."
+✅ Task 2 checklist
+ Week9_Practical_GenAI created
+ week9_day2_security.py created
+ .env created
+ Fake key added
+ .gitignore created
+ .env added to .gitignore
+ Program prints success message
+ Actual key is not printed
+
+This is the same security pattern you'll use later when we connect your project to a real LLM API.
