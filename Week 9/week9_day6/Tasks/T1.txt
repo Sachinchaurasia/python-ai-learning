@@ -1,0 +1,512 @@
+Q1. What is an embedding?
+
+An embedding is a numerical representation of data—such as text—where the numbers are designed to capture useful semantic relationships.
+
+For example:
+
+"Machine learning for cancer detection"
+              ↓
+       Embedding Model
+              ↓
+[0.21, -0.45, 0.78, 0.13, ...]
+
+That list of numbers is called a vector.
+
+The important idea is:
+
+Text → Embedding Model → Vector
+
+The individual dimensions usually don't have simple human-readable meanings like:
+
+dimension 1 = AI
+dimension 2 = medical
+
+Instead, the overall vector represents patterns in the text.
+
+Easy analogy
+
+Think of an embedding as giving each piece of text a location in a mathematical space.
+
+Texts with related meanings tend to have representations that are more similar.
+
+Q2. Why do we convert text into vectors?
+
+Because computers can perform mathematical operations on numbers much more easily than on raw text.
+
+Suppose:
+
+Proposal:
+"Deep learning for cancer detection"
+
+and:
+
+Referee:
+"Medical image analysis using neural networks"
+
+A computer cannot directly calculate:
+
+"How mathematically similar are these two sentences?"
+
+But after embedding:
+
+Proposal
+↓
+[0.82, 0.31, 0.76, ...]
+
+Referee
+↓
+[0.79, 0.35, 0.72, ...]
+
+we can mathematically compare them.
+
+For example:
+
+Vector A
+   ↕
+Cosine Similarity
+   ↕
+Vector B
+
+So:
+
+We convert text into vectors so that mathematical algorithms can compare, search, and retrieve information based on learned representations.
+
+Q3. What does cosine similarity measure?
+
+Cosine similarity measures the directional similarity between two vectors.
+
+The easiest way to remember it:
+
+It asks: "How similarly are these two vectors pointing?"
+
+Imagine two arrows:
+
+A ↗
+ /
+/       ↗ B
+
+They point in almost the same direction → high similarity.
+
+If they point in very different directions:
+
+A → → →
+
+        ↑
+        B
+
+→ lower similarity.
+
+Conceptually:
+
+Closer direction
+      ↓
+Higher similarity
+
+Different direction
+      ↓
+Lower similarity
+
+For embeddings, this gives us a way to estimate how closely two pieces of text are represented semantically.
+
+Important distinction
+Embedding model
+      ↓
+creates vectors
+
+Cosine similarity
+      ↓
+compares vectors
+Q4. Keyword Search vs Semantic Search
+
+This is extremely important for your referee project.
+
+🔤 Keyword Search
+
+Keyword search primarily looks for matching words/terms.
+
+Suppose you search:
+
+"machine learning"
+
+A keyword-based system looks for documents containing those terms or matching lexical rules.
+
+Example:
+
+Document A:
+"Machine learning applications in healthcare"
+
+Likely strong lexical match.
+
+But:
+
+Document B:
+"Neural networks for medical diagnosis"
+
+doesn't contain the exact phrase "machine learning".
+
+A keyword search may not recognize the full semantic relationship.
+
+🧠 Semantic Search
+
+Semantic search converts the query and documents into embeddings.
+
+Query
+ ↓
+Embedding
+ ↓
+Vector
+
+Documents
+ ↓
+Embeddings
+ ↓
+Vectors
+
+Then it compares the vectors.
+
+For example:
+
+Query:
+"machine learning for disease detection"
+
+        ↓ embedding
+
+[0.81, 0.32, 0.71, ...]
+
+Document:
+
+"Deep neural networks for medical diagnosis"
+
+        ↓ embedding
+
+[0.79, 0.35, 0.70, ...]
+
+Their representations may be close, even though the exact words aren't identical.
+
+Simple comparison
+Keyword Search	Semantic Search
+Focuses heavily on words	Focuses on learned semantic representations
+Exact/lexical matches matter	Meaning-related matches can be retrieved
+Traditional search engines/databases commonly use it	Embeddings + vector similarity commonly enable it
+"car" may focus on "car"	"car" can retrieve semantically related text such as "automobile" depending on the embedding model
+
+So:
+
+Keyword Search
+"Do these documents contain similar words?"
+
+Semantic Search
+"Do these documents have similar representations/meaning?"
+
+That's a simplified explanation, but it's a very useful mental model.
+
+Q5. Why would we use a vector database?
+
+Imagine your referee database contains:
+
+10 referees
+
+You could calculate similarities yourself.
+
+But imagine:
+
+100,000 referees
+
+or:
+
+10 million documents
+
+You need an efficient way to:
+
+store embeddings
+index them
+search them
+retrieve nearest/similar vectors
+associate vectors with metadata
+
+That's where a vector database/vector search system becomes useful.
+
+Conceptually:
+
+                 Vector Database
+                       │
+        ┌──────────────┼──────────────┐
+        ↓              ↓              ↓
+   Embedding       Embedding      Embedding
+   Referee A       Referee B      Referee C
+        │              │              │
+        └──────────────┼──────────────┘
+                       ↓
+                 Similarity Search
+                       ↓
+                    Top-K
+
+For your project, a stored record might conceptually contain:
+
+{
+    "referee_id": 101,
+    "name": "Dr. Sharma",
+    "expertise": "Deep Learning, Medical Imaging",
+    "embedding": [0.81, 0.32, 0.71, "..."]
+}
+
+Then your proposal becomes a query vector.
+
+The vector search system finds nearby/similar vectors.
+
+Q6. Your referee system
+
+You asked:
+
+Proposal → ?
+Referee expertise → ?
+
+The answer is:
+
+Proposal
+    ↓
+Embedding Model
+    ↓
+Proposal Embedding / Vector
+
+and:
+
+Referee Expertise
+    ↓
+Embedding Model
+    ↓
+Referee Embedding / Vector
+
+So:
+
+Proposal → Embedding Vector
+Referee expertise → Embedding Vector
+
+Then:
+
+Proposal Vector
+       ↓
+Cosine Similarity
+       ↓
+Referee Vectors
+       ↓
+Similarity Scores
+       ↓
+Top-K Matching Referees
+Your complete system
+              PROPOSAL
+                  │
+                  ▼
+            Embedding Model
+                  │
+                  ▼
+           Proposal Vector
+                  │
+                  │
+                  ▼
+          Similarity Search
+                  ▲
+                  │
+                  │
+       Referee Embeddings
+                  ▲
+                  │
+         Embedding Model
+                  ▲
+                  │
+        Referee Expertise
+
+This is the core of the semantic matching part of your project.
+
+Q7. Embedding Model vs LLM
+
+This distinction is very important for AI Engineering.
+
+🧠 LLM
+
+An LLM is primarily designed for tasks such as:
+
+generating text
+answering questions
+summarizing
+reasoning
+following instructions
+extracting information
+conversation
+code generation
+
+For example:
+
+User:
+Explain machine learning.
+
+        ↓
+
+LLM
+
+        ↓
+
+"Machine learning is a branch of..."
+
+The output is generally generated language.
+
+🔢 Embedding Model
+
+An embedding model is designed to convert input data into a numerical vector representation.
+
+Text
+ ↓
+Embedding Model
+ ↓
+[0.21, -0.43, 0.71, ...]
+
+Its output is primarily a vector, which can then be used for:
+
+similarity
+semantic search
+clustering
+retrieval
+recommendation
+matching
+🔥 The easiest comparison
+
+Think of them as two different tools:
+
+                 AI MODELS
+                    │
+          ┌─────────┴─────────┐
+          ↓                   ↓
+      Embedding Model        LLM
+          ↓                   ↓
+       Vector              Text
+          ↓                   ↓
+    Compare/Search       Generate/Reason
+Example
+
+You give both models:
+
+"Deep learning for medical image analysis"
+
+An embedding model might produce:
+
+[0.81, 0.32, -0.17, 0.73, ...]
+
+An LLM might produce:
+
+"Deep learning can be used to analyze
+medical images such as MRI and CT scans..."
+
+Different purpose.
+
+🎯 Your project uses BOTH
+
+This is where your project becomes a real AI system rather than simply an LLM chatbot.
+
+Embedding model
+
+Used for:
+
+Proposal
+     ↓
+Embedding
+     ↓
+Semantic matching
+     ↓
+Potential referees
+LLM
+
+Could then be used for:
+
+Proposal
+     ↓
+LLM
+     ↓
+Extract structured research areas
+     ↓
+JSON
+
+or:
+
+Proposal + Retrieved Referees
+          ↓
+         LLM
+          ↓
+Explain why each referee may be relevant
+
+So your eventual architecture could look like:
+
+             PROPOSAL PDF
+                  │
+                  ▼
+             Text Extraction
+                  │
+                  ▼
+            LLM / Extraction
+                  │
+                  ▼
+       Structured Research Areas
+                  │
+                  ▼
+            Embedding Model
+                  │
+                  ▼
+          Proposal Embedding
+                  │
+                  ▼
+        ┌─────────────────────┐
+        │   Vector Search      │
+        │                      │
+        │ Referee Embeddings   │
+        └─────────────────────┘
+                  │
+                  ▼
+               Top-K
+                  │
+                  ▼
+         Possible Referees
+                  │
+                  ▼
+            LLM Analysis
+                  │
+                  ▼
+       Explanation / Final Result
+🧠 Day 6 — Final Cheat Sheet
+
+Memorize this:
+
+Question	Answer
+Embedding?	Numerical vector representation of data that captures useful learned patterns/relationships
+Why vectors?	Numbers allow mathematical comparison and efficient similarity/search operations
+Cosine similarity?	Measures the directional similarity between two vectors
+Keyword search?	Primarily matches words/terms
+Semantic search?	Uses vector representations to retrieve semantically related content
+Vector database?	Stores/indexes vectors and supports efficient similarity retrieval, often with metadata
+Proposal?	Convert to an embedding vector
+Referee expertise?	Convert to an embedding vector
+Embedding model?	Converts data into vectors
+LLM?	Generates/processes language and can perform tasks such as extraction, summarization, reasoning, and generation
+⭐ Most important chain for today:
+TEXT
+  ↓
+EMBEDDING MODEL
+  ↓
+VECTOR
+  ↓
+COSINE SIMILARITY
+  ↓
+SEMANTIC SEARCH
+  ↓
+TOP-K
+  ↓
+RELEVANT RESULTS
+
+And for your referee project:
+
+Proposal → Embedding Vector
+Referee Expertise → Embedding Vector
+                    ↓
+             Similarity Search
+                    ↓
+              Top-K Referees
+
+If you understand that chain, you've understood the core idea behind semantic matching.
