@@ -1,0 +1,285 @@
+Q1. What does RAG stand for?
+
+RAG = Retrieval-Augmented Generation.
+
+It combines:
+
+Retrieval + Augmentation + Generation
+
+Instead of asking an LLM to answer only from its learned knowledge, RAG first retrieves relevant information from an external knowledge source and provides that information to the LLM as context.
+
+Q2. Why do we chunk documents?
+
+Large documents are divided into smaller pieces called chunks.
+
+For example:
+
+Large PDF
+   ↓
+Chunk 1
+Chunk 2
+Chunk 3
+Chunk 4
+
+We chunk documents because:
+
+Smaller pieces are easier to embed.
+Retrieval can find the specific relevant section.
+We avoid sending an entire large document to the LLM.
+It reduces unnecessary context.
+It improves retrieval precision.
+
+For your Research AI project, a long research proposal can therefore be divided into meaningful sections before embedding.
+
+Q3. Why do we create embeddings?
+
+An embedding converts text into a numerical vector that represents its semantic meaning.
+
+For example:
+
+"Machine learning is a branch of AI"
+             ↓
+        Embedding Model
+             ↓
+[0.21, -0.43, 0.78, ...]
+
+Text with similar meanings tends to have vectors that are closer together in the embedding space.
+
+This allows us to perform semantic search.
+
+Q4. What is retrieval?
+
+Retrieval is the process of finding the most relevant pieces of information from the knowledge base for a user's query.
+
+Example:
+
+User:
+"What is a CNN?"
+
+        ↓
+
+Query Embedding
+
+        ↓
+
+Vector Search
+
+        ↓
+
+deep_learning.txt
+        ↓
+Relevant chunk about CNN
+
+That retrieved chunk is then provided to the LLM.
+
+Q5. What is augmentation?
+
+Augmentation means adding the retrieved information to the user's query/context before sending it to the LLM.
+
+For example:
+
+User Question
+      +
+Retrieved Documents
+      ↓
+   Context
+      ↓
+     LLM
+
+So instead of:
+
+"What is a CNN?"
+
+the LLM receives something conceptually like:
+
+Context:
+CNNs are neural networks commonly used for image processing...
+
+Question:
+What is a CNN?
+
+The retrieved context augments the original question.
+
+Q6. What is generation?
+
+Generation is the process where the LLM uses the question and retrieved context to produce the final natural-language answer.
+
+Question
+   +
+Retrieved Context
+   ↓
+   LLM
+   ↓
+Generated Answer
+
+For example:
+
+Question:
+What is a CNN?
+
+Answer:
+A CNN is a neural network architecture commonly used
+for image and computer vision tasks.
+Q7. What's the difference between an LLM and an Embedding Model?
+
+This is very important.
+
+LLM	Embedding Model
+Generates text	Converts text into vectors
+Produces answers	Produces numerical representations
+Used for generation	Used for semantic search
+Can write, explain, summarize, etc.	Measures semantic relationships between text
+Example: GPT/Gemini/etc.	Example: a sentence/document embedding model
+
+Think of it like:
+
+                 RAG
+                  │
+        ┌─────────┴─────────┐
+        ↓                   ↓
+ Embedding Model            LLM
+        ↓                   ↓
+  Find relevant          Generate
+   information            answer
+Simple memory trick:
+
+Embedding model = FIND
+LLM = GENERATE
+
+Q8. Why is a vector database useful for large-scale RAG?
+
+Imagine you have:
+
+10 documents
+
+You could potentially search them manually.
+
+But imagine:
+
+100,000 documents
+10 million chunks
+
+Searching every chunk directly would become inefficient.
+
+A vector database stores:
+
+Vector
+  +
+Document/chunk
+  +
+Metadata
+
+and allows efficient similarity searches.
+
+Conceptually:
+
+10 million chunks
+       ↓
+Vector Database
+       ↓
+Query Vector
+       ↓
+Similarity Search
+       ↓
+Top-K relevant chunks
+
+This is extremely useful for large-scale RAG systems.
+
+Q9. What happens if the retriever finds the wrong document?
+
+This is one of the most important RAG problems.
+
+Suppose the user asks:
+
+"What are Transformers?"
+
+But retrieval returns an irrelevant document:
+
+machine_learning.txt
+
+instead of the relevant:
+
+deep_learning.txt
+
+Then:
+
+Wrong Retrieval
+      ↓
+Wrong Context
+      ↓
+LLM
+      ↓
+Potentially incorrect or irrelevant answer
+
+The LLM can only work with the context it receives.
+
+This means good generation does not compensate for poor retrieval.
+
+This is why RAG systems need good:
+
+chunking
+embeddings
+retrieval algorithms
+top-K selection
+metadata filtering
+evaluation
+Q10. Describe your RAG pipeline in one sentence.
+
+For your current project, a strong one-sentence answer is:
+
+My RAG pipeline converts documents into chunks and embeddings, stores them in a vector database, retrieves the most relevant chunks for a user query, adds those chunks as context, and sends the augmented prompt to an LLM to generate the final answer.
+
+Or remember the short version:
+
+Documents
+   ↓
+Chunks
+   ↓
+Embeddings
+   ↓
+Vector Database
+   ↓
+Query
+   ↓
+Retrieval
+   ↓
+Context Augmentation
+   ↓
+LLM
+   ↓
+Answer
+🎯 Week 9 Mental Model
+
+You should now be able to explain this without looking at your notes:
+
+                 USER QUESTION
+                       │
+                       ▼
+              ┌─────────────────┐
+              │ Query Embedding │
+              └────────┬────────┘
+                       │
+                       ▼
+              ┌─────────────────┐
+              │ Vector Database │
+              └────────┬────────┘
+                       │
+                       ▼
+                Relevant Chunks
+                       │
+                       ▼
+              ┌─────────────────┐
+              │   Augmentation  │
+              │ Query + Context │
+              └────────┬────────┘
+                       │
+                       ▼
+                     LLM
+                       │
+                       ▼
+                 FINAL ANSWER
+🔑 The three words to remember
+
+Retrieval → Augmentation → Generation
+
+That is the heart of RAG.

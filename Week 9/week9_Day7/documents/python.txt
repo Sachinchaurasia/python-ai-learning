@@ -1,0 +1,9 @@
+Python is a high-level programming language known for its
+simple syntax and readability.
+
+Python is widely used in web development, data analysis,
+machine learning, artificial intelligence, automation,
+scientific computing, and scripting.
+
+Popular Python libraries include NumPy, Pandas,
+Scikit-learn, TensorFlow, PyTorch, and Matplotlib.

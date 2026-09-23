@@ -1,0 +1,361 @@
+Today's Mini Project — Improve Your RAG System
+
+Your current flow is approximately:
+
+Documents
+   ↓
+Chunking
+   ↓
+Embeddings
+   ↓
+Vector Search
+   ↓
+Top-K Results
+   ↓
+LLM
+   ↓
+Answer
+
+Today we're going to make the retrieved information visible and controllable.
+
+Challenge 1 — Show Sources
+
+Suppose your retrieval result looks like:
+
+results = [
+    {
+        "filename": "machine_learning.txt",
+        "text": "...",
+        "similarity": 0.82
+    },
+    {
+        "filename": "artificial_intelligence.txt",
+        "text": "...",
+        "similarity": 0.76
+    }
+]
+
+You can display the sources like this:
+
+print("\nSources used:")
+
+for i, result in enumerate(results, start=1):
+    print(f"{i}. {result['filename']}")
+Expected output
+Sources used:
+
+1. machine_learning.txt
+2. artificial_intelligence.txt
+Why are we doing this?
+
+A RAG application shouldn't just say:
+
+Machine learning is a subset of AI...
+
+It is much more useful if your application can also tell you:
+
+Sources used:
+1. machine_learning.txt
+2. artificial_intelligence.txt
+
+This is especially important for your Research AI / referee recommendation project, because eventually you'll want to know exactly which proposal/referee documents contributed to an answer.
+
+Challenge 2 — Show Similarity
+
+Now let's expose the similarity score.
+
+Use:
+
+for result in results:
+    print(f"Source: {result['filename']}")
+    print(f"Similarity: {result['similarity']:.2f}")
+
+Example:
+
+Source: machine_learning.txt
+Similarity: 0.82
+
+Source: artificial_intelligence.txt
+Similarity: 0.76
+Important
+
+Don't write something like:
+
+if similarity > 0.80:
+    relevant = True
+
+and assume 0.80 is universally correct.
+
+Similarity values depend on things such as:
+
+embedding model
+documents
+chunking strategy
+query
+distance/similarity calculation
+
+For now, just display the score.
+
+Later we'll learn how to evaluate an appropriate retrieval threshold.
+
+Challenge 3 — Experiment With Top-K
+
+This is an important RAG concept.
+
+Suppose:
+
+results = retrieve_documents(query)
+
+and you have:
+
+Result 1 → ML
+Result 2 → AI
+Result 3 → Deep Learning
+Result 4 → Neural Networks
+Result 5 → Computer Vision
+
+If you use:
+
+top_results = results[:1]
+
+the LLM receives only:
+
+Result 1
+
+If you use:
+
+top_results = results[:3]
+
+the LLM receives:
+
+Result 1
+Result 2
+Result 3
+Test 1 — Top 1
+
+Change your code to:
+
+top_results = results[:1]
+
+Run a question such as:
+
+What is the relationship between artificial intelligence and machine learning?
+
+Record the answer.
+
+Test 2 — Top 3
+
+Now change it to:
+
+top_results = results[:3]
+
+Run the same question.
+
+Record the answer.
+
+Compare
+
+Create a simple table in your notes:
+
+Setting	Retrieved documents	Answer
+Top-1	1	Your answer
+Top-3	3	Your answer
+
+Ask yourself:
+
+Q1
+
+Did the Top-3 answer contain more information?
+
+Q2
+
+Did Top-3 introduce irrelevant information?
+
+Q3
+
+Was Top-1 more focused?
+
+Q4
+
+Did the answer change significantly?
+
+This is how you start developing an intuition for retrieval quality rather than blindly choosing k=3 or k=5.
+
+Challenge 4 — Add deep_learning.txt
+
+Create a new file:
+
+deep_learning.txt
+
+Put it inside the same documents/data folder where your other knowledge files are stored.
+
+For example:
+
+documents/
+│
+├── artificial_intelligence.txt
+├── machine_learning.txt
+└── deep_learning.txt
+
+Use content covering these five areas:
+
+Deep Learning
+
+Deep learning is a subfield of machine learning that uses
+artificial neural networks with multiple layers to learn
+patterns from data.
+
+Neural Networks
+
+A neural network consists of interconnected computational
+units called neurons. Neural networks typically contain an
+input layer, one or more hidden layers, and an output layer.
+During training, the model adjusts its weights to reduce
+prediction error.
+
+CNN
+
+Convolutional Neural Networks, or CNNs, are neural networks
+commonly used for image and computer vision tasks. CNNs use
+convolutional operations to identify features such as edges,
+textures, shapes, and increasingly complex visual patterns.
+
+RNN
+
+Recurrent Neural Networks, or RNNs, are designed to process
+sequential data. They can use information from previous
+steps when processing later elements of a sequence. RNNs
+have been used for tasks involving text, speech, and time
+series data.
+
+Transformers
+
+Transformers are neural network architectures based on
+attention mechanisms. They are widely used for natural
+language processing and are the foundation of many modern
+large language models.
+
+Deep Learning Applications
+
+Deep learning is used in areas such as computer vision,
+natural language processing, speech recognition, recommendation
+systems, medical image analysis, autonomous systems, and
+generative AI.
+⚠️ Important: Adding the File Is Not Enough
+
+This is a very important RAG concept.
+
+Simply creating:
+
+deep_learning.txt
+
+does not necessarily mean your vector database knows about it.
+
+Your pipeline needs to process the new document:
+
+deep_learning.txt
+        ↓
+Read text
+        ↓
+Chunk text
+        ↓
+Create embeddings
+        ↓
+Store vectors
+
+So run whatever document ingestion/indexing script you've been using for your existing files.
+
+For example, if your project has something like:
+
+load_documents()
+
+or:
+
+create_embeddings()
+
+or:
+
+build_vector_store()
+
+run that again.
+
+Otherwise your retriever may continue searching only the old documents.
+
+🧪 Final Testing
+
+Once deep_learning.txt has been indexed, try:
+
+Test 1
+What is a CNN?
+
+Expected source should likely include:
+
+deep_learning.txt
+Test 2
+What is the difference between CNN and RNN?
+
+You may see:
+
+Sources used:
+
+1. deep_learning.txt
+...
+
+and similarity values such as:
+
+Source: deep_learning.txt
+Similarity: 0.84
+
+Your actual numbers will vary.
+
+Test 3
+
+Ask:
+
+What are Transformers and why are they important in modern AI?
+
+Again inspect:
+
+Sources used:
+
+and:
+
+Similarity:
+🔥 Your RAG Application Is Now Becoming More Complete
+
+After today's challenges, your pipeline becomes:
+
+                  ┌─────────────────────┐
+                  │  Knowledge Files    │
+                  │                     │
+                  │ AI                  │
+                  │ ML                  │
+                  │ Deep Learning       │
+                  └──────────┬──────────┘
+                             ↓
+                         Chunking
+                             ↓
+                        Embeddings
+                             ↓
+                     Vector Database
+                             ↓
+                          Query
+                             ↓
+                    Similarity Search
+                             ↓
+                         Top-K
+                       /    |    \
+                      /     |     \
+                   Top-1   Top-2  Top-3
+                      \     |     /
+                       \    |    /
+                         Context
+                            ↓
+                           LLM
+                            ↓
+                         Answer
+                            ↓
+              ┌─────────────┴─────────────┐
+              ↓                           ↓
+          Answer                     Sources
+                                      + Similarity
