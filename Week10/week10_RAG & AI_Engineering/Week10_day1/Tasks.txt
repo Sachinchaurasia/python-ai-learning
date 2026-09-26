@@ -1,0 +1,513 @@
+Q1. Why can't we simply create one embedding for an entire 100-page PDF?
+
+An embedding converts text into one vector representing the meaning of that text.
+
+If we embed an entire 100-page PDF as one vector:
+
+100-page PDF
+     ↓
+   Embedding
+     ↓
+One huge vector
+
+we lose the ability to precisely identify which part of the document contains the relevant information.
+
+For example, suppose your proposal contains:
+
+Page 5  → Research objectives
+Page 20 → Methodology
+Page 45 → Expected outcomes
+Page 80 → References
+
+A researcher asks:
+
+"Which proposal discusses deep-learning-based image classification?"
+
+If the entire 100-page document has one embedding, retrieval can only say:
+
+This document is relevant.
+
+It cannot easily identify:
+
+Page 23, paragraph 2 → relevant information
+
+Instead, we do:
+
+100-page PDF
+      ↓
+Extract text
+      ↓
+Clean text
+      ↓
+Split into chunks
+      ↓
+Chunk 1 → embedding
+Chunk 2 → embedding
+Chunk 3 → embedding
+...
+Chunk 200 → embedding
+
+Then retrieval can find the specific relevant chunks.
+
+This is especially important for your system:
+
+Research Proposal
+       ↓
+Chunks
+       ↓
+Embeddings
+       ↓
+Vector Search
+       ↓
+Relevant proposal sections
+       ↓
+Compare with referee expertise
+Q2. What is a chunk?
+
+A chunk is a smaller meaningful piece of a document.
+
+For example:
+
+Original document
+──────────────────────────────
+
+Artificial intelligence is...
+Machine learning is...
+Deep learning is...
+Transformers are...
+Natural language processing is...
+
+We can divide it into:
+
+Chunk 1
+Artificial intelligence is...
+Machine learning is...
+
+Chunk 2
+Deep learning is...
+Transformers are...
+
+Chunk 3
+Natural language processing is...
+
+Each chunk can then receive its own embedding.
+
+Think of:
+
+Document
+   ↓
+Paragraphs / sentences
+   ↓
+Chunks
+   ↓
+Embeddings
+
+A chunk is therefore the unit of text that your retrieval system searches.
+
+Q3. What happens if chunks are too large?
+
+Suppose we create:
+
+Chunk = 5,000 words
+
+The chunk contains many different topics:
+
+AI
+Machine Learning
+Deep Learning
+Dataset
+Methodology
+Results
+References
+
+Its embedding represents a mixture of many concepts.
+
+That makes retrieval less precise.
+
+For example:
+
+User query:
+"Deep learning methodology"
+
+The system may retrieve a huge chunk containing:
+
+AI + ML + DL + dataset + results + references
+
+instead of a focused section.
+
+Problems with very large chunks
+Less precise retrieval
+More unrelated information
+More tokens sent to the LLM
+Higher processing cost
+Harder for the LLM to identify the exact relevant information
+Q4. What happens if chunks are too small?
+
+Now imagine:
+
+Chunk 1 → "The proposed"
+Chunk 2 → "method uses"
+Chunk 3 → "deep learning"
+Chunk 4 → "for classification."
+
+Each chunk contains very little meaning.
+
+The embedding:
+
+"The proposed"
+
+doesn't tell us much.
+
+Problems with very small chunks
+Not enough context
+Weak semantic meaning
+Retrieval becomes fragmented
+Important relationships between sentences can be lost
+More chunks → more embeddings → more storage/search work
+
+So we want a balance:
+
+Too large
+    ↓
+Low precision
+
+Too small
+    ↓
+Low context
+
+Good chunk
+    ↓
+Enough context + good retrieval
+Q5. What is chunk overlap?
+
+Chunk overlap means deliberately repeating some text between neighboring chunks.
+
+Suppose we have:
+
+S1
+S2
+S3
+S4
+S5
+S6
+
+with:
+
+sentences_per_chunk = 3
+overlap_sentences = 1
+
+we get:
+
+Chunk 0
+S1 S2 S3
+
+Chunk 1
+    S3 S4 S5
+
+Chunk 2
+        S5 S6
+
+Notice:
+
+S3
+
+appears in both Chunk 0 and Chunk 1.
+
+And:
+
+S5
+
+appears in both Chunk 1 and Chunk 2.
+
+That's chunk overlap.
+
+Q6. Why does overlap help preserve context?
+
+Imagine a document says:
+
+The researchers collected 10,000 images.
+
+These images were then divided into training and testing datasets.
+
+Suppose the chunk boundary happens here:
+
+Chunk 1:
+The researchers collected 10,000 images.
+
+Chunk 2:
+These images were then divided into training and testing datasets.
+
+The second chunk contains:
+
+"These images..."
+
+But what images?
+
+The previous sentence explains it.
+
+With overlap:
+
+Chunk 1:
+The researchers collected 10,000 images.
+
+Chunk 2:
+The researchers collected 10,000 images.
+These images were then divided into training and testing datasets.
+
+Now Chunk 2 retains the context.
+
+So overlap helps prevent information from being lost at chunk boundaries.
+
+Q7. Character-based vs Sentence-based chunking
+Character-based chunking
+
+We split according to the number of characters.
+
+Example:
+
+chunk_size = 500
+
+So:
+
+Characters 1–500 → Chunk 1
+Characters 501–1000 → Chunk 2
+Characters 1001–1500 → Chunk 3
+
+The problem is that we might cut a sentence:
+
+The researchers developed a new deep learning
+
+and then:
+
+model for identifying...
+
+That's not ideal semantically.
+
+Character-based
+Text
+ ↓
+Count characters
+ ↓
+Split every N characters
+
+Advantage: simple and predictable size.
+
+Disadvantage: may break sentences or words.
+
+Sentence-based chunking
+
+This is what you're currently implementing.
+
+First:
+
+sentences = split_sentences(text)
+
+Then:
+
+Sentence 1
+Sentence 2
+Sentence 3
+Sentence 4
+Sentence 5
+
+and create:
+
+Chunk 1 → S1 S2 S3
+Chunk 2 → S3 S4 S5
+Advantage
+
+Chunks generally preserve complete thoughts and are more semantically meaningful.
+
+Disadvantage
+
+Sentence lengths aren't equal.
+
+For example:
+
+Sentence A = 20 words
+Sentence B = 25 words
+Sentence C = 150 words
+
+A three-sentence chunk could therefore become quite large.
+
+Quick comparison
+Feature	Character-based	Sentence-based
+Splitting unit	Characters	Sentences
+Simple	✅	✅
+Preserves sentences	❌	✅
+Predictable size	✅	Less predictable
+Semantic quality	Moderate	Generally better
+Your current implementation	❌	✅
+Q8. Why is metadata important in RAG?
+
+Metadata gives us information about where a chunk came from and what it represents.
+
+Your chunk currently looks like:
+
+{
+    "chunk_id": 0,
+    "source": "research_document.txt",
+    "document_type": "research",
+    "text": "..."
+}
+
+The embedding represents the meaning.
+
+Metadata tells us the identity and context.
+
+Think:
+
+Embedding
+    ↓
+"What does this text mean?"
+
+Metadata
+    ↓
+"Where did this text come from?"
+
+Metadata is extremely useful when retrieving results.
+
+For example:
+
+Query
+ ↓
+Vector Search
+ ↓
+Top 5 chunks
+ ↓
+Metadata tells us:
+
+source = proposal_101.pdf
+page = 23
+section = methodology
+document_type = research_proposal
+
+Then your application can show:
+
+Relevant information found in Proposal 101, Methodology section, page 23.
+
+Q9. For your Research Proposal AI, what metadata could you store?
+
+This is where your actual project becomes interesting.
+
+You could store:
+
+proposal_id
+source
+document_type
+page_number
+section
+chunk_id
+research_domain
+researcher_id
+
+For example:
+
+{
+    "proposal_id": "PROP-001",
+
+    "chunk_id": 15,
+
+    "source": "research_proposal_001.pdf",
+
+    "document_type": "research_proposal",
+
+    "page_number": 12,
+
+    "section": "Methodology",
+
+    "research_domain": "Artificial Intelligence",
+
+    "researcher_id": "RES-104",
+
+    "text": "The proposed methodology..."
+}
+For your referee-matching system
+
+You could eventually have:
+
+Proposal Metadata
+────────────────────────────
+proposal_id
+title
+research_domain
+keywords
+researcher_id
+source_file
+page_number
+section
+chunk_id
+
+and referee metadata:
+
+Referee Metadata
+────────────────────────────
+referee_id
+name
+institution
+designation
+expertise
+keywords
+
+Then your system can do:
+
+                 Research Proposal
+                        │
+                        ↓
+                     Chunking
+                        │
+                        ↓
+                    Embeddings
+                        │
+                        ↓
+                 Semantic Retrieval
+                        │
+                        ↓
+               Relevant Referee Expertise
+                        │
+                        ↓
+                Candidate Referees
+
+And metadata can additionally filter the search.
+
+For example:
+
+Find chunks where:
+
+document_type = "research_proposal"
+
+AND
+
+research_domain = "AI"
+
+before or alongside semantic similarity.
+
+🧠 The key idea to remember
+
+For your Week 10 learning, remember this chain:
+
+DOCUMENT
+   ↓
+CLEAN
+   ↓
+CHUNK
+   ↓
+METADATA
+   ↓
+EMBEDDING
+   ↓
+VECTOR DATABASE
+   ↓
+RETRIEVAL
+   ↓
+LLM
+
+And the three most important concepts are:
+
+Chunk       = What piece of text do we search?
+
+Embedding   = What does that piece of text mean?
+
+Metadata    = Where/what does that piece of text belong to?
+
+You have now understood the core chunking concepts needed before moving into advanced embeddings and vector storage.

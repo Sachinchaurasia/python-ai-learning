@@ -1,0 +1,17 @@
+Artificial intelligence is a field of computer science
+focused on creating systems that can perform tasks that
+normally require human intelligence.
+
+Machine learning is a subfield of artificial intelligence.
+It allows computers to learn patterns from data without
+being explicitly programmed for every task.
+
+Deep learning is a subset of machine learning that uses
+neural networks with multiple layers.
+
+Transformers are neural network architectures that use
+attention mechanisms to process relationships between
+different parts of input data.
+
+Transformers are widely used in modern natural language
+processing and generative AI applications.

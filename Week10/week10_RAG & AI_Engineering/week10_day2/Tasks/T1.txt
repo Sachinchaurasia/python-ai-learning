@@ -1,0 +1,554 @@
+Task 1 — Basic FAISS
+1. What is FAISS?
+
+FAISS (Facebook AI Similarity Search) is a library for efficiently searching vectors.
+
+Suppose we have:
+
+Vector A → [1, 2]
+Vector B → [5, 5]
+Vector C → [9, 8]
+
+and our query is:
+
+Query → [2, 2]
+
+FAISS can find which stored vector is closest to the query.
+
+Conceptually:
+
+                 Query
+               [2, 2]
+                  │
+                  ▼
+           ┌─────────────┐
+           │    FAISS    │
+           │ Vector Index│
+           └──────┬──────┘
+                  │
+          similarity/distance
+                  │
+       ┌──────────┼──────────┐
+       ▼          ▼          ▼
+   Vector A    Vector B    Vector C
+    [1,2]       [5,5]       [9,8]
+       ↑
+     closest
+2. IndexFlatL2
+
+This is one of the simplest FAISS indexes.
+
+import faiss
+
+Create an index:
+
+index = faiss.IndexFlatL2(2)
+
+The 2 means:
+
+Each vector has 2 dimensions.
+
+For example:
+
+[1, 2]
+
+has 2 dimensions.
+
+3. index.add()
+
+We give FAISS our vectors:
+
+import numpy as np
+import faiss
+
+vectors = np.array([
+    [1, 2],
+    [5, 5],
+    [9, 8]
+], dtype="float32")
+
+index = faiss.IndexFlatL2(2)
+
+index.add(vectors)
+
+Now:
+
+FAISS Index
+
+0 → [1, 2]
+1 → [5, 5]
+2 → [9, 8]
+
+You can check how many vectors were added:
+
+print(index.ntotal)
+
+Output:
+
+3
+Important:
+index.add(vectors)
+
+means:
+
+Store these vectors inside the FAISS index.
+
+4. index.search()
+
+Now we have a query:
+
+query = np.array([
+    [2, 2]
+], dtype="float32")
+
+Search:
+
+distances, indices = index.search(query, 2)
+
+The 2 means:
+
+Give me the 2 closest vectors.
+
+Then:
+
+print(distances)
+print(indices)
+
+You may get something conceptually like:
+
+Distances:
+[[1. 18.]]
+
+Indices:
+[[0 1]]
+
+This means:
+
+Rank 1 → vector index 0 → [1,2]
+Rank 2 → vector index 1 → [5,5]
+⭐ Understand these three lines
+
+This is the most important part of Task 1:
+
+index = faiss.IndexFlatL2(2)
+
+Create a FAISS index using L2 distance for 2-dimensional vectors.
+
+index.add(vectors)
+
+Store vectors in the index.
+
+distances, indices = index.search(query, k)
+
+Search the stored vectors and return the nearest k vectors.
+
+Remember:
+
+IndexFlatL2
+     ↓
+Create index
+
+index.add()
+     ↓
+Store vectors
+
+index.search()
+     ↓
+Find nearest vectors
+🧪 Task 2 — Semantic FAISS
+
+Now we move from artificial 2D vectors to real text embeddings.
+
+We'll use five documents:
+
+documents = [
+    "Python is widely used for machine learning.",
+    "Java is commonly used for enterprise applications.",
+    "Deep learning uses neural networks.",
+    "SQL is used to manage relational databases.",
+    "TensorFlow is a framework for machine learning."
+]
+
+The important difference is:
+
+Text
+ ↓
+Embedding Model
+ ↓
+Vector
+ ↓
+FAISS
+
+For example:
+
+"Deep learning uses neural networks."
+                ↓
+         Embedding Model
+                ↓
+       [0.12, -0.31, ...]
+                ↓
+              FAISS
+Query 1
+
+Run:
+
+What technology is used for neural networks?
+
+FAISS doesn't understand the English question directly.
+
+First:
+
+Question
+   ↓
+Embedding
+   ↓
+Query Vector
+   ↓
+FAISS
+
+Then FAISS compares that vector against the document vectors.
+
+Your Top-3 results should be examined to see whether the semantically related documents appear near the top.
+
+Query 2
+Which language is popular for machine learning?
+
+You should expect the Python document to be highly relevant:
+
+Python is widely used for machine learning.
+
+But don't focus on a particular numerical distance as a universal "correct" value. The important thing here is relative ranking.
+
+Query 3
+What is used to manage relational data?
+
+The relevant document is:
+
+SQL is used to manage relational databases.
+
+Again, inspect the Top-3 results.
+
+Task 3 — Change Top-K
+
+This is where you'll see the practical meaning of k.
+
+Suppose:
+
+k = 3
+
+distances, indices = index.search(query_vector, k)
+
+FAISS returns:
+
+Rank 1
+Rank 2
+Rank 3
+
+Now change:
+
+k = 1
+
+You get:
+
+Rank 1
+
+Only the single nearest result.
+
+Then:
+
+k = 5
+
+You get:
+
+Rank 1
+Rank 2
+Rank 3
+Rank 4
+Rank 5
+Think of it like this:
+k = 1
+Question
+   ↓
+Best matching document
+
+
+k = 3
+Question
+   ↓
+Top 3 matching documents
+
+
+k = 5
+Question
+   ↓
+Top 5 matching documents
+
+This is exactly the same concept you encountered earlier in RAG:
+
+top_results = results[:1]
+
+versus:
+
+top_results = results[:3]
+⭐ Task 4 — Add Metadata
+
+Now we're moving toward the structure you'll actually need in your Research AI system.
+
+Instead of:
+
+documents = [
+    "Python is widely used for machine learning.",
+    "Java is commonly used for enterprise applications.",
+    "Deep learning uses neural networks."
+]
+
+we have:
+
+documents = [
+    {
+        "id": 1,
+        "source": "python.txt",
+        "text": "Python is widely used for machine learning."
+    },
+    {
+        "id": 2,
+        "source": "java.txt",
+        "text": "Java is commonly used for enterprise applications."
+    },
+    {
+        "id": 3,
+        "source": "deep_learning.txt",
+        "text": "Deep learning uses neural networks."
+    }
+]
+
+Now we have metadata.
+
+Each document contains:
+
+ID
+Source
+Text
+Step 1 — Extract Text
+
+FAISS needs vectors, so we embed only the text:
+
+texts = [doc["text"] for doc in documents]
+
+Now:
+
+print(texts)
+
+gives:
+
+[
+    "Python is widely used for machine learning.",
+    "Java is commonly used for enterprise applications.",
+    "Deep learning uses neural networks."
+]
+Step 2 — Create Embeddings
+
+Your embedding model receives:
+
+texts
+
+and produces something conceptually like:
+
+Document 1 → [0.12, -0.44, 0.73, ...]
+Document 2 → [0.51,  0.21, 0.08, ...]
+Document 3 → [0.32, -0.17, 0.92, ...]
+
+All vectors must have the same dimensionality.
+
+Step 3 — Add Embeddings to FAISS
+index.add(embeddings)
+
+Notice something important:
+
+FAISS stores the vectors, not your Python dictionaries.
+
+So FAISS knows:
+
+Vector 0
+Vector 1
+Vector 2
+
+But your Python program knows:
+
+0 → documents[0]
+1 → documents[1]
+2 → documents[2]
+
+This relationship is extremely important.
+
+Step 4 — Search
+
+Suppose:
+
+k = 3
+
+distances, indices = index.search(query_embedding, k)
+
+You might receive:
+
+indices =
+[[2, 0, 1]]
+
+This means:
+
+Rank 1 → index 2
+Rank 2 → index 0
+Rank 3 → index 1
+
+Now use those indices to recover your metadata.
+
+for rank, idx in enumerate(indices[0], start=1):
+
+    doc = documents[idx]
+
+    print(f"Rank: {rank}")
+    print(f"ID: {doc['id']}")
+    print(f"Source: {doc['source']}")
+    print(f"Text: {doc['text']}")
+Step 5 — Display Distance
+
+You also have:
+
+distances
+
+So:
+
+for rank, (idx, distance) in enumerate(
+    zip(indices[0], distances[0]),
+    start=1
+):
+
+    doc = documents[idx]
+
+    print(f"Rank: {rank}")
+    print(f"ID: {doc['id']}")
+    print(f"Source: {doc['source']}")
+    print(f"Text: {doc['text']}")
+    print(f"Distance: {distance:.4f}")
+    print()
+
+Output will look like:
+
+Rank: 1
+ID: 3
+Source: deep_learning.txt
+Text: Deep learning uses neural networks.
+Distance: ...
+
+Rank: 2
+ID: 1
+Source: python.txt
+Text: Python is widely used for machine learning.
+Distance: ...
+
+Rank: 3
+ID: 2
+Source: java.txt
+Text: Java is commonly used for enterprise applications.
+Distance: ...
+
+The exact distances depend on your embedding model and vectors.
+
+🧠 Very Important Concept
+
+Notice the separation:
+
+                 DOCUMENT
+                    │
+          ┌─────────┴─────────┐
+          ↓                   ↓
+        TEXT               METADATA
+          │                   │
+          ↓                   │
+    Embedding Model           │
+          │                   │
+          ↓                   │
+        VECTOR                │
+          │                   │
+          ↓                   │
+        FAISS                 │
+          │                   │
+          ↓                   │
+      index = 2 ──────────────┘
+          │
+          ↓
+documents[2]
+          │
+          ↓
+source = deep_learning.txt
+
+FAISS gives you:
+
+index
+distance
+
+Your application uses the index to recover:
+
+id
+source
+text
+
+This is the beginning of a proper retrieval system.
+
+🔥 Why This Matters for Your Research AI Project
+
+Eventually your document won't simply be:
+
+"text"
+
+It could look more like:
+
+{
+    "id": 1052,
+    "source": "research_proposal_1052.pdf",
+    "page": 17,
+    "chunk_id": 42,
+    "section": "Methodology",
+    "text": "...",
+    "proposal_id": 1052
+}
+
+Then FAISS retrieves the relevant vector, and your application can tell the LLM:
+
+Source: research_proposal_1052.pdf
+Page: 17
+Section: Methodology
+
+Relevant text:
+...
+
+That's much closer to the architecture you'll eventually use.
+
+🎯 Your Assignment
+
+Complete these in order:
+
+☐ Task 1
+   IndexFlatL2
+   index.add()
+   index.search()
+
+☐ Task 2
+   Five documents
+   Three queries
+   Observe Top-3
+
+☐ Task 3
+   k = 1
+   k = 3
+   k = 5
+
+☐ Task 4
+   Add id
+   Add source
+   Add text
+   Retrieve metadata
+   Display distance
+The key mental model for today:
+
+Embedding converts meaning into vectors → FAISS searches those vectors → indices map the results back to your original documents and metadata.

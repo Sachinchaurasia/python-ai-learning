@@ -1,0 +1,725 @@
+Q1. What is a vector database?
+
+A vector database is a database designed to store and search vector embeddings efficiently.
+
+For example:
+
+Document
+   ↓
+Embedding Model
+   ↓
+[0.12, -0.43, 0.77, ...]
+   ↓
+Vector Database
+
+It usually stores the vector together with metadata such as:
+
+vector
+document_id
+filename
+page
+chunk_id
+text
+
+It allows us to ask:
+
+"Which stored vectors are most similar to this query vector?"
+
+Q2. What is a vector index?
+
+A vector index is a data structure used to organize vectors so that similarity/nearest-neighbor searches can be performed.
+
+In your FAISS example:
+
+index = faiss.IndexFlatL2(dimension)
+
+creates a vector index.
+
+Then:
+
+index.add(embeddings)
+
+adds vectors to it.
+
+And:
+
+index.search(query, k)
+
+searches the index.
+
+Think:
+
+Vector Index
+     ↓
+Organizes/searches vectors
+Q3. What's the difference between a vector index and a vector database?
+
+This distinction is very important.
+
+Vector index
+
+Primarily concerned with:
+
+Finding similar vectors
+
+For example, FAISS provides vector indexes.
+
+Vector database
+
+Provides a larger database system around vectors.
+
+It can handle things like:
+
+Vectors
+   +
+IDs
+   +
+Metadata
+   +
+Filtering
+   +
+Persistence
+   +
+Search
+
+So:
+
+Vector Index
+     ↓
+Similarity search mechanism
+
+
+Vector Database
+     ↓
+Complete storage + retrieval system
+     ├── vectors
+     ├── metadata
+     ├── IDs
+     ├── filtering
+     └── search
+
+A useful analogy:
+
+Vector index = search engine structure
+Vector database = complete system that stores and manages the data and search capability
+
+FAISS can be used as the vector-search component, while a production vector database typically provides additional storage and database functionality.
+
+Q4. Why can brute-force search become expensive?
+
+Suppose you have:
+
+10 documents
+
+Searching every vector is easy.
+
+But imagine:
+
+10 million vectors
+
+For every query, brute-force search may compare the query against all 10 million vectors.
+
+Conceptually:
+
+Query
+ ↓
+Compare with vector 1
+Compare with vector 2
+Compare with vector 3
+...
+Compare with vector 10,000,000
+
+As the dataset becomes larger, computation and latency can become expensive.
+
+That's why vector indexes can use optimized/approximate nearest-neighbor techniques to reduce the amount of work needed.
+
+Q5. What does FAISS do?
+
+FAISS = Facebook AI Similarity Search.
+
+It is a library for efficient similarity search over vectors.
+
+In your RAG system:
+
+Documents
+    ↓
+Embeddings
+    ↓
+FAISS
+    ↓
+Nearest vectors
+    ↓
+Relevant document chunks
+
+The basic FAISS operations you've learned are:
+
+index = faiss.IndexFlatL2(dimension)
+
+Create index.
+
+index.add(vectors)
+
+Add vectors.
+
+distances, indices = index.search(query, k)
+
+Find the k nearest vectors.
+
+Q6. What does k mean in index.search(query, k)?
+
+k means:
+
+How many nearest results you want returned.
+
+For example:
+
+index.search(query, 1)
+
+returns the nearest 1 vector.
+
+index.search(query, 3)
+
+returns the nearest 3 vectors.
+
+index.search(query, 5)
+
+returns the nearest 5 vectors.
+
+So:
+
+k = 1 → Top 1
+k = 3 → Top 3
+k = 5 → Top 5
+
+This is directly related to the Top-K retrieval you used in RAG.
+
+Q7. Cosine Similarity vs L2 Distance
+
+Both are ways of comparing vectors, but they measure different things.
+
+Cosine similarity
+
+Cosine similarity measures the angle/orientation between vectors.
+
+Conceptually:
+
+Similar direction
+      ↓
+High cosine similarity
+
+For normalized vectors, larger cosine similarity generally means greater semantic similarity.
+
+L2 distance
+
+L2 distance is the ordinary Euclidean distance between vectors.
+
+Conceptually:
+
+Vector A ●────────● Vector B
+             ↑
+          distance
+
+Smaller L2 distance means the vectors are closer.
+
+So the basic interpretation is:
+
+Method	Meaning	Better match
+Cosine similarity	How similar the vector directions are	Higher
+L2 distance	How far apart vectors are	Lower
+
+One important detail: for normalized vectors, cosine similarity and squared L2 distance produce equivalent rankings. That's one reason normalization is commonly used when implementing cosine-style semantic search with FAISS.
+
+Q8. Why should vector IDs be associated with metadata?
+
+Because a vector by itself doesn't tell your application where it came from.
+
+Suppose FAISS returns:
+
+index = 2
+
+You need to know:
+
+2
+↓
+Document 3
+↓
+deep_learning.txt
+↓
+Page 5
+↓
+Chunk 12
+
+For your current example:
+
+documents = [
+    {
+        "id": 1,
+        "source": "python.txt",
+        "text": "Python is widely used for machine learning."
+    },
+    {
+        "id": 2,
+        "source": "java.txt",
+        "text": "Java is commonly used for enterprise applications."
+    },
+    {
+        "id": 3,
+        "source": "deep_learning.txt",
+        "text": "Deep learning uses neural networks."
+    }
+]
+
+FAISS might return:
+
+index = 2
+
+Your application then uses that ID/index to recover:
+
+ID: 3
+Source: deep_learning.txt
+Text: Deep learning uses neural networks.
+
+This allows you to show sources and metadata to the user and provide the correct text to the LLM.
+
+⭐ Q9. For your Research Proposal AI
+
+You have:
+
+Proposal
+   ↓
+Embedding
+   ↓
+Vector Search
+   ↓
+???
+
+The next step is:
+
+Retrieve the relevant proposal/referee chunks and metadata.
+
+More completely:
+
+Research Proposal
+        ↓
+     Chunking
+        ↓
+    Embeddings
+        ↓
+   Vector Search
+        ↓
+Retrieve Top-K Relevant Chunks
+        ↓
+Retrieve Metadata
+        ↓
+   Relevant Context
+        ↓
+      LLM
+        ↓
+Analysis / Matching / Recommendation
+
+For your Research Proposal AI, the retrieved information might look like:
+
+Rank: 1
+Referee ID: 105
+Name: Dr. XYZ
+Source: referee_105.txt
+Expertise: Neural networks, Deep Learning, Computer Vision
+Similarity: 0.84
+
+Then your system can use that retrieved information for the next stage.
+
+🧠 The Most Important Concept
+
+For your project, remember this chain:
+
+                    RESEARCH PROPOSAL
+                           ↓
+                        CHUNKS
+                           ↓
+                       EMBEDDINGS
+                           ↓
+                    VECTOR SEARCH
+                           ↓
+                    TOP-K RESULTS
+                           ↓
+                  ┌────────┴────────┐
+                  ↓                 ↓
+              TEXT CHUNKS       METADATA
+                  │                 │
+                  └────────┬────────┘
+                           ↓
+                     RELEVANT CONTEXT
+                           ↓
+                          LLM
+                           ↓
+              Proposal Analysis / Matching
+🔑 One-line answer for Q9:
+
+After vector search, we retrieve the Top-K relevant chunks along with their metadata and use them as context for the next processing/LLM stage.
+
+That distinction—vector search finds the relevant vector, while metadata mapping tells us what that vector represents—is one of the key ideas you need before building the next part of your Research Proposal AI.
+
+
+
+
+
+Q1. What is a vector database?
+
+A vector database is a database designed to store and search vector embeddings efficiently.
+
+For example:
+
+Document
+   ↓
+Embedding Model
+   ↓
+[0.12, -0.43, 0.77, ...]
+   ↓
+Vector Database
+
+It usually stores the vector together with metadata such as:
+
+vector
+document_id
+filename
+page
+chunk_id
+text
+
+It allows us to ask:
+
+"Which stored vectors are most similar to this query vector?"
+
+Q2. What is a vector index?
+
+A vector index is a data structure used to organize vectors so that similarity/nearest-neighbor searches can be performed.
+
+In your FAISS example:
+
+index = faiss.IndexFlatL2(dimension)
+
+creates a vector index.
+
+Then:
+
+index.add(embeddings)
+
+adds vectors to it.
+
+And:
+
+index.search(query, k)
+
+searches the index.
+
+Think:
+
+Vector Index
+     ↓
+Organizes/searches vectors
+Q3. What's the difference between a vector index and a vector database?
+
+This distinction is very important.
+
+Vector index
+
+Primarily concerned with:
+
+Finding similar vectors
+
+For example, FAISS provides vector indexes.
+
+Vector database
+
+Provides a larger database system around vectors.
+
+It can handle things like:
+
+Vectors
+   +
+IDs
+   +
+Metadata
+   +
+Filtering
+   +
+Persistence
+   +
+Search
+
+So:
+
+Vector Index
+     ↓
+Similarity search mechanism
+
+
+Vector Database
+     ↓
+Complete storage + retrieval system
+     ├── vectors
+     ├── metadata
+     ├── IDs
+     ├── filtering
+     └── search
+
+A useful analogy:
+
+Vector index = search engine structure
+Vector database = complete system that stores and manages the data and search capability
+
+FAISS can be used as the vector-search component, while a production vector database typically provides additional storage and database functionality.
+
+Q4. Why can brute-force search become expensive?
+
+Suppose you have:
+
+10 documents
+
+Searching every vector is easy.
+
+But imagine:
+
+10 million vectors
+
+For every query, brute-force search may compare the query against all 10 million vectors.
+
+Conceptually:
+
+Query
+ ↓
+Compare with vector 1
+Compare with vector 2
+Compare with vector 3
+...
+Compare with vector 10,000,000
+
+As the dataset becomes larger, computation and latency can become expensive.
+
+That's why vector indexes can use optimized/approximate nearest-neighbor techniques to reduce the amount of work needed.
+
+Q5. What does FAISS do?
+
+FAISS = Facebook AI Similarity Search.
+
+It is a library for efficient similarity search over vectors.
+
+In your RAG system:
+
+Documents
+    ↓
+Embeddings
+    ↓
+FAISS
+    ↓
+Nearest vectors
+    ↓
+Relevant document chunks
+
+The basic FAISS operations you've learned are:
+
+index = faiss.IndexFlatL2(dimension)
+
+Create index.
+
+index.add(vectors)
+
+Add vectors.
+
+distances, indices = index.search(query, k)
+
+Find the k nearest vectors.
+
+Q6. What does k mean in index.search(query, k)?
+
+k means:
+
+How many nearest results you want returned.
+
+For example:
+
+index.search(query, 1)
+
+returns the nearest 1 vector.
+
+index.search(query, 3)
+
+returns the nearest 3 vectors.
+
+index.search(query, 5)
+
+returns the nearest 5 vectors.
+
+So:
+
+k = 1 → Top 1
+k = 3 → Top 3
+k = 5 → Top 5
+
+This is directly related to the Top-K retrieval you used in RAG.
+
+Q7. Cosine Similarity vs L2 Distance
+
+Both are ways of comparing vectors, but they measure different things.
+
+Cosine similarity
+
+Cosine similarity measures the angle/orientation between vectors.
+
+Conceptually:
+
+Similar direction
+      ↓
+High cosine similarity
+
+For normalized vectors, larger cosine similarity generally means greater semantic similarity.
+
+L2 distance
+
+L2 distance is the ordinary Euclidean distance between vectors.
+
+Conceptually:
+
+Vector A ●────────● Vector B
+             ↑
+          distance
+
+Smaller L2 distance means the vectors are closer.
+
+So the basic interpretation is:
+
+Method	Meaning	Better match
+Cosine similarity	How similar the vector directions are	Higher
+L2 distance	How far apart vectors are	Lower
+
+One important detail: for normalized vectors, cosine similarity and squared L2 distance produce equivalent rankings. That's one reason normalization is commonly used when implementing cosine-style semantic search with FAISS.
+
+Q8. Why should vector IDs be associated with metadata?
+
+Because a vector by itself doesn't tell your application where it came from.
+
+Suppose FAISS returns:
+
+index = 2
+
+You need to know:
+
+2
+↓
+Document 3
+↓
+deep_learning.txt
+↓
+Page 5
+↓
+Chunk 12
+
+For your current example:
+
+documents = [
+    {
+        "id": 1,
+        "source": "python.txt",
+        "text": "Python is widely used for machine learning."
+    },
+    {
+        "id": 2,
+        "source": "java.txt",
+        "text": "Java is commonly used for enterprise applications."
+    },
+    {
+        "id": 3,
+        "source": "deep_learning.txt",
+        "text": "Deep learning uses neural networks."
+    }
+]
+
+FAISS might return:
+
+index = 2
+
+Your application then uses that ID/index to recover:
+
+ID: 3
+Source: deep_learning.txt
+Text: Deep learning uses neural networks.
+
+This allows you to show sources and metadata to the user and provide the correct text to the LLM.
+
+⭐ Q9. For your Research Proposal AI
+
+You have:
+
+Proposal
+   ↓
+Embedding
+   ↓
+Vector Search
+   ↓
+???
+
+The next step is:
+
+Retrieve the relevant proposal/referee chunks and metadata.
+
+More completely:
+
+Research Proposal
+        ↓
+     Chunking
+        ↓
+    Embeddings
+        ↓
+   Vector Search
+        ↓
+Retrieve Top-K Relevant Chunks
+        ↓
+Retrieve Metadata
+        ↓
+   Relevant Context
+        ↓
+      LLM
+        ↓
+Analysis / Matching / Recommendation
+
+For your Research Proposal AI, the retrieved information might look like:
+
+Rank: 1
+Referee ID: 105
+Name: Dr. XYZ
+Source: referee_105.txt
+Expertise: Neural networks, Deep Learning, Computer Vision
+Similarity: 0.84
+
+Then your system can use that retrieved information for the next stage.
+
+🧠 The Most Important Concept
+
+For your project, remember this chain:
+
+                    RESEARCH PROPOSAL
+                           ↓
+                        CHUNKS
+                           ↓
+                       EMBEDDINGS
+                           ↓
+                    VECTOR SEARCH
+                           ↓
+                    TOP-K RESULTS
+                           ↓
+                  ┌────────┴────────┐
+                  ↓                 ↓
+              TEXT CHUNKS       METADATA
+                  │                 │
+                  └────────┬────────┘
+                           ↓
+                     RELEVANT CONTEXT
+                           ↓
+                          LLM
+                           ↓
+              Proposal Analysis / Matching
+🔑 One-line answer for Q9:
+
+After vector search, we retrieve the Top-K relevant chunks along with their metadata and use them as context for the next processing/LLM stage.
+
+That distinction—vector search finds the relevant vector, while metadata mapping tells us what that vector represents—is one of the key ideas you need before building the next part of your Research Proposal AI.

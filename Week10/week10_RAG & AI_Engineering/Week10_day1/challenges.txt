@@ -1,0 +1,194 @@
+Challenge 1 — 3 sentences per chunk
+
+Change:
+
+sentences_per_chunk = 2
+
+to:
+
+sentences_per_chunk = 3
+
+For example, if your document contains:
+
+Sentence 1.
+Sentence 2.
+Sentence 3.
+Sentence 4.
+Sentence 5.
+Sentence 6.
+
+With sentences_per_chunk = 2:
+
+Chunk 0 → Sentence 1 + Sentence 2
+Chunk 1 → Sentence 3 + Sentence 4
+Chunk 2 → Sentence 5 + Sentence 6
+
+With sentences_per_chunk = 3:
+
+Chunk 0 → Sentence 1 + Sentence 2 + Sentence 3
+Chunk 1 → Sentence 4 + Sentence 5 + Sentence 6
+
+Observation: Larger chunks contain more context, but there are fewer chunks.
+
+Challenge 2 — Remove overlap
+
+Current:
+
+overlap_sentences = 1
+
+Change to:
+
+overlap_sentences = 0
+
+With overlap:
+
+Chunk 0 → S1 S2 S3
+Chunk 1 → S3 S4 S5
+Chunk 2 → S5 S6 S7
+
+Without overlap:
+
+Chunk 0 → S1 S2 S3
+Chunk 1 → S4 S5 S6
+Chunk 2 → S7 S8 S9
+
+The important idea is:
+
+Overlap preserves context between neighboring chunks.
+
+Without overlap, the boundary between chunks can sometimes split related information.
+
+Challenge 3 — Load all .txt files automatically
+
+Instead of manually doing:
+
+document_path = "documents/research_document.txt"
+
+use pathlib:
+
+from pathlib import Path
+
+documents_dir = Path("documents")
+
+documents = list(documents_dir.glob("*.txt"))
+
+for document_path in documents:
+    print(f"Loading: {document_path.name}")
+
+    text = document_path.read_text(
+        encoding="utf-8"
+    )
+
+    print(f"Characters: {len(text)}")
+
+Now your folder can contain:
+
+documents/
+├── research_document.txt
+└── machine_learning.txt
+
+and the program automatically finds both files.
+
+Later, if you add:
+
+documents/
+├── research_document.txt
+├── machine_learning.txt
+├── deep_learning.txt
+└── artificial_intelligence.txt
+
+you don't need to modify the Python code.
+
+Challenge 4 ⭐ — Add document_type
+
+This is particularly important for your Research Proposal AI project.
+
+Instead of:
+
+chunk = {
+    "chunk_id": chunk_id,
+    "source": source,
+    "text": chunk_text
+}
+
+use:
+
+chunk = {
+    "chunk_id": chunk_id,
+    "source": source,
+    "document_type": "research",
+    "text": chunk_text
+}
+
+So the result becomes:
+
+{
+    "chunk_id": 0,
+    "source": "research_document.txt",
+    "document_type": "research",
+    "text": "Artificial intelligence is..."
+}
+Better version for multiple documents
+
+Since you're now loading multiple files, don't hard-code the source.
+
+You can build each chunk like this:
+
+chunk = {
+    "chunk_id": chunk_id,
+    "source": document_path.name,
+    "document_type": "research",
+    "text": chunk_text
+}
+
+Then:
+
+research_document.txt
+
+produces:
+
+{
+    "chunk_id": 0,
+    "source": "research_document.txt",
+    "document_type": "research",
+    "text": "..."
+}
+
+while:
+
+machine_learning.txt
+
+produces:
+
+{
+    "chunk_id": 0,
+    "source": "machine_learning.txt",
+    "document_type": "research",
+    "text": "..."
+}
+One important improvement
+
+For your actual project, we'll eventually make document_type dynamic rather than assigning "research" to every document.
+
+For example:
+
+research_document.txt → research
+machine_learning.txt  → machine_learning
+
+That will become useful when we build:
+
+Document
+   ↓
+Text Extraction
+   ↓
+Cleaning
+   ↓
+Chunking
+   ↓
+Metadata
+   ↓
+Embedding
+   ↓
+Vector Database
+   ↓
+Semantic Search
