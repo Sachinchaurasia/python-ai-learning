@@ -1,0 +1,481 @@
+⭐⭐ Challenge 4 — Build a Referee Retriever
+
+This is an important milestone because we're moving from a generic FAISS example to the actual core idea of your Research Proposal AI:
+
+Proposal Topic
+      ↓
+Embedding
+      ↓
+FAISS
+      ↓
+Similar Referee Expertise
+      ↓
+Top-K Referees
+
+We'll build it step by step.
+
+1. Create the referee data
+
+Create a Python file such as:
+
+referee_retriever.py
+
+Start with:
+
+referees = [
+    {
+        "id": 1,
+        "name": "Referee A",
+        "expertise": "Machine learning, computer vision",
+        "domain": "AI"
+    },
+    {
+        "id": 2,
+        "name": "Referee B",
+        "expertise": "Natural language processing, transformers, LLMs",
+        "domain": "NLP"
+    },
+    {
+        "id": 3,
+        "name": "Referee C",
+        "expertise": "Photocatalysis, photovoltaics, material chemistry",
+        "domain": "Materials"
+    }
+]
+
+Notice that each referee has:
+
+id
+name
+expertise
+domain
+
+But for semantic retrieval, our main input will be:
+
+referee["expertise"]
+2. Extract the expertise
+
+Create a list:
+
+expertise_texts = [
+    referee["expertise"]
+    for referee in referees
+]
+
+You can check it:
+
+print(expertise_texts)
+
+Output:
+
+[
+    'Machine learning, computer vision',
+    'Natural language processing, transformers, LLMs',
+    'Photocatalysis, photovoltaics, material chemistry'
+]
+
+So our pipeline is currently:
+
+Referee data
+     ↓
+Extract expertise
+     ↓
+Expertise texts
+3. Create embeddings
+
+Now pass the expertise texts through your embedding model.
+
+If you're using the same local embedding model from your previous exercises, the code will depend on the model/library you selected.
+
+For example, conceptually:
+
+expertise_embeddings = model.encode(expertise_texts)
+
+Now:
+
+Machine learning, computer vision
+              ↓
+        [0.12, -0.43, ...]
+
+
+Natural language processing...
+              ↓
+        [0.51,  0.21, ...]
+
+
+Photocatalysis...
+              ↓
+        [0.31, -0.17, ...]
+
+All three vectors have the same dimensionality.
+
+4. Create the FAISS index
+
+First determine the embedding dimension:
+
+dimension = expertise_embeddings.shape[1]
+
+Then:
+
+import faiss
+
+index = faiss.IndexFlatL2(dimension)
+
+Add the referee embeddings:
+
+index.add(expertise_embeddings)
+
+Now FAISS contains:
+
+FAISS
+│
+├── Vector 0 → Referee A
+├── Vector 1 → Referee B
+└── Vector 2 → Referee C
+
+Remember:
+
+FAISS doesn't know the names.
+
+It only knows vector positions.
+
+Your Python list maintains the mapping:
+
+FAISS index 0 → referees[0]
+FAISS index 1 → referees[1]
+FAISS index 2 → referees[2]
+
+This mapping is extremely important.
+
+5. Ask for a proposal topic
+
+Now:
+
+proposal_topic = input("Enter proposal topic: ")
+
+For example:
+
+Enter proposal topic:
+Transformer-based NLP for scientific document analysis.
+6. Embed the proposal topic
+
+The proposal query must go through the same embedding model:
+
+query_embedding = model.encode(
+    [proposal_topic]
+)
+
+Now:
+
+Proposal topic
+      ↓
+Same embedding model
+      ↓
+Query vector
+
+This is important.
+
+You should not use one embedding model for referees and an unrelated model for the query.
+
+7. Search FAISS
+
+Let's retrieve the Top-3:
+
+k = 3
+
+distances, indices = index.search(
+    query_embedding,
+    k
+)
+
+FAISS might return something conceptually like:
+
+indices:
+[[1, 0, 2]]
+
+Meaning:
+
+Rank 1 → referee index 1
+Rank 2 → referee index 0
+Rank 3 → referee index 2
+
+So:
+
+referees[1]
+
+is Referee B.
+
+8. Display the results
+
+Now connect the FAISS result back to your metadata:
+
+for rank, (idx, distance) in enumerate(
+    zip(indices[0], distances[0]),
+    start=1
+):
+    referee = referees[idx]
+
+    print(f"\nRank: {rank}")
+    print(f"ID: {referee['id']}")
+    print(f"Name: {referee['name']}")
+    print(f"Expertise: {referee['expertise']}")
+    print(f"Domain: {referee['domain']}")
+    print(f"Distance: {distance:.4f}")
+
+You should get output structurally like:
+
+Rank: 1
+ID: 2
+Name: Referee B
+Expertise: Natural language processing, transformers, LLMs
+Domain: NLP
+Distance: ...
+
+Rank: 2
+ID: 1
+Name: Referee A
+Expertise: Machine learning, computer vision
+Domain: AI
+Distance: ...
+
+Rank: 3
+ID: 3
+Name: Referee C
+Expertise: Photocatalysis, photovoltaics, material chemistry
+Domain: Materials
+Distance: ...
+
+The actual ordering and distance values depend on your embedding model. The important thing is that the NLP/Transformer expertise should be semantically relevant to the example query.
+
+🧠 Complete Version
+
+If you are using a SentenceTransformer-style local embedding model, your complete script can look like this:
+
+import faiss
+from sentence_transformers import SentenceTransformer
+
+
+# --------------------------------
+# 1. Referee data
+# --------------------------------
+
+referees = [
+    {
+        "id": 1,
+        "name": "Referee A",
+        "expertise": "Machine learning, computer vision",
+        "domain": "AI"
+    },
+    {
+        "id": 2,
+        "name": "Referee B",
+        "expertise": "Natural language processing, transformers, LLMs",
+        "domain": "NLP"
+    },
+    {
+        "id": 3,
+        "name": "Referee C",
+        "expertise": "Photocatalysis, photovoltaics, material chemistry",
+        "domain": "Materials"
+    }
+]
+
+
+# --------------------------------
+# 2. Load embedding model
+# --------------------------------
+
+model = SentenceTransformer("all-MiniLM-L6-v2")
+
+
+# --------------------------------
+# 3. Create expertise embeddings
+# --------------------------------
+
+expertise_texts = [
+    referee["expertise"]
+    for referee in referees
+]
+
+expertise_embeddings = model.encode(
+    expertise_texts,
+    convert_to_numpy=True
+).astype("float32")
+
+
+# --------------------------------
+# 4. Create FAISS index
+# --------------------------------
+
+dimension = expertise_embeddings.shape[1]
+
+index = faiss.IndexFlatL2(dimension)
+
+index.add(expertise_embeddings)
+
+
+# --------------------------------
+# 5. Get proposal topic
+# --------------------------------
+
+proposal_topic = input(
+    "\nEnter proposal topic: "
+)
+
+
+# --------------------------------
+# 6. Create query embedding
+# --------------------------------
+
+query_embedding = model.encode(
+    [proposal_topic],
+    convert_to_numpy=True
+).astype("float32")
+
+
+# --------------------------------
+# 7. Search
+# --------------------------------
+
+k = min(3, len(referees))
+
+distances, indices = index.search(
+    query_embedding,
+    k
+)
+
+
+# --------------------------------
+# 8. Display results
+# --------------------------------
+
+print("\n===== Matching Referees =====")
+
+for rank, (idx, distance) in enumerate(
+    zip(indices[0], distances[0]),
+    start=1
+):
+
+    referee = referees[idx]
+
+    print(f"\nRank: {rank}")
+    print(f"ID: {referee['id']}")
+    print(f"Name: {referee['name']}")
+    print(f"Expertise: {referee['expertise']}")
+    print(f"Domain: {referee['domain']}")
+    print(f"Distance: {distance:.4f}")
+🔍 Test These Queries
+
+Don't test only the given example. Try several topics.
+
+Test 1
+Transformer-based NLP for scientific document analysis.
+
+Think:
+
+Which referee should appear near the top?
+Test 2
+Deep learning methods for image classification.
+
+This should test the relationship with:
+
+Machine learning
+Computer vision
+Test 3
+Solar energy materials and photocatalytic systems.
+
+This should test:
+
+Photocatalysis
+Photovoltaics
+Material chemistry
+Test 4
+Large language models for scientific text processing.
+
+This should strongly test:
+
+NLP
+Transformers
+LLMs
+⭐ What You Have Built
+
+You have now created a very small version of your future system:
+
+              REFEREE DATABASE
+                     │
+          ┌──────────┼──────────┐
+          ↓          ↓          ↓
+       Referee A  Referee B  Referee C
+          │          │          │
+          ↓          ↓          ↓
+      Expertise   Expertise   Expertise
+          │          │          │
+          └──────────┼──────────┘
+                     ↓
+                 Embeddings
+                     ↓
+                 FAISS Index
+                     ↑
+                     │
+              Proposal Topic
+                     ↓
+                  Embedding
+                     ↓
+               Vector Search
+                     ↓
+                Top-K Referees
+🚨 One limitation of this prototype
+
+This is not yet a production referee recommendation system.
+
+Right now we're matching only:
+
+Proposal topic
+       ↕
+Referee expertise
+
+Your real Research Proposal AI will eventually need additional stages:
+
+Proposal PDF
+    ↓
+Text Extraction / OCR
+    ↓
+Cleaning
+    ↓
+Chunking
+    ↓
+Proposal Understanding
+    ↓
+Domain / Topic Extraction
+    ↓
+Embedding
+    ↓
+Candidate Referee Retrieval
+    ↓
+Similarity + Metadata Filtering
+    ↓
+Conflict-of-Interest Checks
+    ↓
+Candidate Ranking
+    ↓
+Final Referee Recommendations
+
+And importantly, semantic similarity alone should not be treated as proof that a referee is suitable. It is a retrieval signal that helps produce candidates; other rules and validation steps should be applied afterward.
+
+🎯 Your challenge
+
+Implement the script and test all four proposal topics.
+
+Then try changing:
+
+k = 3
+
+to:
+
+k = 1
+
+and observe how the returned referee list changes.
+
+The key concept to master today is:
+
+We embed referee expertise once, embed the proposal topic at query time, use FAISS to find the nearest expertise vectors, and map those vector indices back to referee metadata.
