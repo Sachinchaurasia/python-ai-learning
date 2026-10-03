@@ -1,0 +1,578 @@
+Challenge 26 ⭐ — Similarity Threshold
+
+Suppose retrieval gives:
+
+retrieved_chunks = [
+    {"text": "Machine learning...", "score": 0.91},
+    {"text": "Deep learning...", "score": 0.84},
+    {"text": "Database systems...", "score": 0.63},
+    {"text": "Operating systems...", "score": 0.42},
+]
+
+Set:
+
+threshold = 0.80
+
+Then:
+
+filtered_chunks = [
+    chunk
+    for chunk in retrieved_chunks
+    if chunk["score"] >= threshold
+]
+
+Result:
+
+0.91 ✅
+0.84 ✅
+0.63 ❌
+0.42 ❌
+
+So only the relevant chunks enter the context.
+
+Why is this useful?
+
+Without a threshold:
+
+Retriever
+   ↓
+Relevant + weak + unrelated chunks
+   ↓
+LLM
+
+With a threshold:
+
+Retriever
+   ↓
+Similarity Threshold
+   ↓
+Relevant Chunks
+   ↓
+LLM
+
+This is one of the simplest ways to improve context quality.
+
+Challenge 27 ⭐⭐ — Top-K + Threshold
+
+Now combine two techniques.
+
+top_k = 2
+threshold = 0.75
+
+Example:
+
+retrieved_chunks = [
+    {"text": "Chunk A", "score": 0.91},
+    {"text": "Chunk B", "score": 0.84},
+    {"text": "Chunk C", "score": 0.79},
+    {"text": "Chunk D", "score": 0.63},
+]
+Step 1 — Threshold filtering
+filtered_chunks = [
+    chunk
+    for chunk in retrieved_chunks
+    if chunk["score"] >= threshold
+]
+
+Remaining:
+
+A → 0.91
+B → 0.84
+C → 0.79
+Step 2 — Sort
+filtered_chunks.sort(
+    key=lambda x: x["score"],
+    reverse=True
+)
+Step 3 — Take Top-K
+final_chunks = filtered_chunks[:top_k]
+
+Final:
+
+Chunk A → 0.91
+Chunk B → 0.84
+Complete implementation
+top_k = 2
+threshold = 0.75
+
+filtered_chunks = [
+    chunk
+    for chunk in retrieved_chunks
+    if chunk["score"] >= threshold
+]
+
+filtered_chunks.sort(
+    key=lambda x: x["score"],
+    reverse=True
+)
+
+final_chunks = filtered_chunks[:top_k]
+
+The important order is:
+
+Retrieve
+   ↓
+Threshold Filter
+   ↓
+Sort
+   ↓
+Top-K
+   ↓
+Context
+
+Not:
+
+Retrieve
+   ↓
+Top-K
+   ↓
+Threshold
+
+because taking Top-K first can allow poor candidates into the final context while better candidates outside the initial K are ignored.
+
+Challenge 28 ⭐⭐⭐ — Explainable RAG
+
+This is especially important for your Research Proposal AI.
+
+Instead of silently passing retrieved chunks to the LLM, expose what was retrieved.
+
+For example:
+
+retrieved_chunks = [
+    {
+        "text": "The proposed methodology uses...",
+        "page": 12,
+        "section": "Methodology",
+        "score": 0.91
+    },
+    {
+        "text": "The dataset contains...",
+        "page": 15,
+        "section": "Dataset",
+        "score": 0.84
+    },
+    {
+        "text": "Performance will be evaluated...",
+        "page": 18,
+        "section": "Evaluation",
+        "score": 0.79
+    }
+]
+
+You can print:
+
+print("RETRIEVAL SUMMARY")
+print("-----------------")
+
+print(f"Sources retrieved: {len(retrieved_chunks)}")
+
+for i, chunk in enumerate(retrieved_chunks, start=1):
+    print(f"\n{i}. Page {chunk['page']}")
+    print(f"   Section: {chunk['section']}")
+    print(f"   Similarity: {chunk['score']:.2f}")
+
+Output:
+
+RETRIEVAL SUMMARY
+-----------------
+Sources retrieved: 3
+
+1. Page 12
+   Section: Methodology
+   Similarity: 0.91
+
+2. Page 15
+   Section: Dataset
+   Similarity: 0.84
+
+3. Page 18
+   Section: Evaluation
+   Similarity: 0.79
+
+Then construct the context:
+
+context = "\n\n".join(
+    chunk["text"]
+    for chunk in retrieved_chunks
+)
+
+print("\nFINAL CONTEXT")
+print("-------------")
+print(context)
+Why this matters
+
+When your LLM produces a bad answer, you can investigate:
+
+Was retrieval wrong?
+        ↓
+Was filtering wrong?
+        ↓
+Was context too large?
+        ↓
+Was the prompt wrong?
+        ↓
+Did the LLM misunderstand the evidence?
+
+This is the beginning of debuggable AI systems.
+
+🧠 Challenge 29 — A More Complete Version
+
+Here is a version combining everything you've learned:
+
+top_k = 2
+threshold = 0.75
+
+# 1. Filter by similarity
+filtered_chunks = [
+    chunk
+    for chunk in retrieved_chunks
+    if chunk["score"] >= threshold
+]
+
+# 2. Sort by similarity
+filtered_chunks.sort(
+    key=lambda x: x["score"],
+    reverse=True
+)
+
+# 3. Select Top-K
+final_chunks = filtered_chunks[:top_k]
+
+# 4. Retrieval summary
+print("RETRIEVAL SUMMARY")
+print("-----------------")
+
+print(f"Sources retrieved: {len(final_chunks)}")
+
+for i, chunk in enumerate(final_chunks, start=1):
+    print(f"\n{i}. Page {chunk['page']}")
+    print(f"   Section: {chunk['section']}")
+    print(f"   Similarity: {chunk['score']:.2f}")
+
+# 5. Build context
+context = "\n\n".join(
+    chunk["text"]
+    for chunk in final_chunks
+)
+
+print("\nFINAL CONTEXT")
+print("-------------")
+print(context)
+
+This is already much closer to the retrieval layer you will eventually use in Research Proposal AI.
+
+🧠 Challenge 30 — Key Concepts
+Concept	Meaning
+RAG Prompt	Prompt containing retrieved evidence
+Context	Information supplied to the LLM
+Grounding	Keeping an answer tied to supplied evidence
+Context Management	Controlling what information enters the prompt
+Top-K	Number of retrieved chunks/candidates selected
+Threshold	Minimum acceptable similarity score
+Context Window	Maximum amount of information the model can process
+Context Compression	Reducing context while preserving important information
+Retrieval	Finding relevant information
+Generation	Producing the final answer
+Source Metadata	Page, section, document, score, etc.
+🧠 Day 5 Questions — Your Answers
+1. What is context in a RAG system?
+
+Context is the relevant information retrieved from the knowledge base and supplied to the LLM so that it can generate an answer based on that evidence.
+
+Example:
+
+Question
+   ↓
+Retriever
+   ↓
+Relevant chunks
+   ↓
+Context
+   ↓
+LLM
+2. Why shouldn't we send the entire document to the LLM?
+
+Because a large document can:
+
+consume the context window
+increase token usage
+increase latency
+introduce irrelevant information
+make it harder for the model to identify relevant evidence
+potentially reduce answer quality
+
+RAG therefore tries to provide relevant evidence instead of the entire document.
+
+3. What is grounding?
+
+Grounding means keeping the generated answer connected to the retrieved evidence.
+
+For example:
+
+Retrieved evidence:
+"The experiment achieved 92% accuracy."
+
+LLM:
+"The proposal reports an experimental accuracy of 92%."
+
+The answer is grounded because it is supported by the supplied context.
+
+4. Difference between retrieval and generation?
+
+Retrieval finds information.
+
+Database
+   ↓
+Retriever
+   ↓
+Relevant chunks
+
+Generation creates the answer.
+
+Context + Question
+        ↓
+       LLM
+        ↓
+      Answer
+
+In simple terms:
+
+Retrieval = finding
+Generation = producing
+
+5. Why can increasing top_k sometimes make answers worse?
+
+Suppose:
+
+top_k = 2
+
+gives:
+
+Chunk A → 0.94
+Chunk B → 0.89
+
+But:
+
+top_k = 10
+
+may additionally include:
+
+Chunk F → 0.54
+Chunk G → 0.49
+Chunk H → 0.43
+
+Those additional chunks may introduce irrelevant or conflicting information.
+
+Therefore:
+
+Higher Top-K
+≠
+Always better RAG
+
+The goal is useful context, not maximum context.
+
+6. What is a similarity threshold?
+
+A similarity threshold is the minimum similarity score required for a retrieved chunk to be accepted.
+
+Example:
+
+threshold = 0.80
+
+Then:
+
+0.91 → accepted
+0.84 → accepted
+0.78 → rejected
+0.61 → rejected
+7. What is a context window?
+
+The context window is the amount of input/output information that a model can handle within a request.
+
+Conceptually:
+
+Question
++
+Instructions
++
+Retrieved Context
++
+Conversation
++
+Output
+        ↓
+   Context Window
+
+If you put too much information into the request, you can hit the model's context limit or make the prompt inefficient.
+
+8. What is context compression?
+
+Context compression means reducing the amount of retrieved information while trying to preserve the information necessary to answer the question.
+
+For example:
+
+10 retrieved chunks
+       ↓
+Remove irrelevant sentences
+       ↓
+Compress/summarize useful evidence
+       ↓
+3 concise chunks
+       ↓
+LLM
+
+This becomes particularly useful when documents are large.
+
+9. If retrieved chunks are wrong but the LLM gives a reasonable answer, is RAG necessarily working correctly?
+
+No.
+
+The final answer may happen to be correct even though retrieval failed.
+
+For example:
+
+Question
+   ↓
+Wrong chunks
+   ↓
+LLM already knows the answer
+   ↓
+Correct-looking answer
+
+This creates a dangerous situation because the system appears to work.
+
+That's why explainable retrieval is important:
+
+Answer
+ +
+Retrieved Sources
+ +
+Similarity
+ +
+Metadata
+
+You should evaluate retrieval quality separately from generation quality.
+
+10. In Research Proposal AI, why shouldn't referee semantic similarity be the only factor?
+
+Because a good referee match involves more than semantic similarity.
+
+Your system can eventually consider:
+
+Proposal
+   │
+   ├── Semantic similarity
+   ├── Research domain
+   ├── Expertise
+   ├── Specific research keywords
+   ├── Methodology
+   ├── Institution/organization constraints
+   ├── Availability
+   └── Conflict-of-interest rules
+
+For example, a referee could have a high semantic similarity score but still be unsuitable because of a conflict of interest or because their expertise does not cover an important methodological requirement.
+
+Therefore:
+
+Semantic Similarity
+        +
+Metadata / Rules
+        +
+Eligibility
+        ↓
+Candidate Ranking
+
+is a more realistic architecture.
+
+🏗️ Your Research Proposal AI Architecture
+
+You now have two related pipelines.
+
+Proposal evaluation
+RESEARCH PROPOSAL
+       ↓
+    PDF/OCR
+       ↓
+ Text Cleaning
+       ↓
+    Chunking
+       ↓
+   Embeddings
+       ↓
+Vector Retrieval
+       ↓
+Metadata / Hybrid Search
+       ↓
+Threshold Filtering
+       ↓
+     Top-K
+       ↓
+Context Management
+       ↓
+   RAG Prompt
+       ↓
+      LLM
+       ↓
+Grounded Explanation
+Referee recommendation
+Proposal
+   ↓
+Proposal Embedding
+   ↓
+Referee Embeddings
+   ↓
+Semantic Retrieval
+   ↓
+Metadata / Rule Filtering
+   ↓
+Candidate Ranking
+   ↓
+Evidence + Candidate Data
+   ↓
+RAG Prompt
+   ↓
+LLM Explanation
+🎯 Day 5 Completion Pipeline
+
+You should now be able to explain:
+
+Question
+   ↓
+Embedding
+   ↓
+Retrieval
+   ↓
+Threshold
+   ↓
+Top-K
+   ↓
+Context
+   ↓
+RAG Prompt
+   ↓
+LLM
+   ↓
+Grounded Answer
+The most important idea from today
+
+Don't think of RAG as simply:
+
+PDF → LLM
+
+Think of it as:
+
+PDF
+ ↓
+Knowledge Representation
+ ↓
+Retrieval
+ ↓
+Filtering
+ ↓
+Context Management
+ ↓
+Evidence
+ ↓
+LLM
+
+That distinction is important because the retrieval and context-management layers are what make an LLM application into a real RAG system.

@@ -1,0 +1,802 @@
+35. ⭐ Day 6 Challenge — Precision@5 and Recall@5
+
+Given:
+
+retrieved_ids = [2, 4, 5, 8, 10]
+relevant_ids = [2, 5, 8]
+
+The retrieved results contain:
+
+2 ✅
+4 ❌
+5 ✅
+8 ✅
+10 ❌
+
+So:
+
+Relevant retrieved documents = 3
+Total retrieved documents = 5
+Total relevant documents = 3
+Formulas
+
+Precision@K
+
+relevant retrieved documents
+─────────────────────────────
+       retrieved documents
+
+Recall@K
+
+relevant retrieved documents
+─────────────────────────────
+       total relevant documents
+
+Therefore:
+
+Precision@5 = 3 / 5 = 0.60
+Recall@5    = 3 / 3 = 1.00
+Python implementation
+
+Create:
+
+scripts/day6_evaluation.py
+def precision_at_k(retrieved_ids, relevant_ids, k):
+    retrieved_at_k = retrieved_ids[:k]
+
+    relevant_retrieved = sum(
+        1 for doc_id in retrieved_at_k
+        if doc_id in relevant_ids
+    )
+
+    if k == 0:
+        return 0.0
+
+    return relevant_retrieved / k
+
+
+def recall_at_k(retrieved_ids, relevant_ids, k):
+    retrieved_at_k = retrieved_ids[:k]
+
+    relevant_retrieved = sum(
+        1 for doc_id in retrieved_at_k
+        if doc_id in relevant_ids
+    )
+
+    if len(relevant_ids) == 0:
+        return 0.0
+
+    return relevant_retrieved / len(relevant_ids)
+
+
+retrieved_ids = [2, 4, 5, 8, 10]
+relevant_ids = [2, 5, 8]
+
+k = 5
+
+precision = precision_at_k(
+    retrieved_ids,
+    relevant_ids,
+    k
+)
+
+recall = recall_at_k(
+    retrieved_ids,
+    relevant_ids,
+    k
+)
+
+print(f"Precision@{k}: {precision:.2f}")
+print(f"Recall@{k}: {recall:.2f}")
+
+Run:
+
+python scripts/day6_evaluation.py
+
+Expected:
+
+Precision@5: 0.60
+Recall@5: 1.00
+Now change K = 3
+
+The retrieved documents become:
+
+[2, 4, 5]
+
+Relevant:
+
+2 ✅
+4 ❌
+5 ✅
+
+Therefore:
+
+2 relevant / 3 retrieved
+
+So:
+
+Precision@3 = 2 / 3 = 0.67
+Recall@3    = 2 / 3 = 0.67
+
+Notice something important:
+
+K	Retrieved	Relevant retrieved	Precision	Recall
+3	2, 4, 5	2	0.67	0.67
+5	2, 4, 5, 8, 10	3	0.60	1.00
+
+This is exactly why we evaluate different K values.
+
+36. ⭐⭐ Precision@1, @3, @5
+
+Now automate the experiment.
+
+def precision_at_k(retrieved_ids, relevant_ids, k):
+    retrieved_at_k = retrieved_ids[:k]
+
+    relevant_retrieved = sum(
+        1 for doc_id in retrieved_at_k
+        if doc_id in relevant_ids
+    )
+
+    return relevant_retrieved / k if k > 0 else 0.0
+
+
+def recall_at_k(retrieved_ids, relevant_ids, k):
+    retrieved_at_k = retrieved_ids[:k]
+
+    relevant_retrieved = sum(
+        1 for doc_id in retrieved_at_k
+        if doc_id in relevant_ids
+    )
+
+    return (
+        relevant_retrieved / len(relevant_ids)
+        if relevant_ids
+        else 0.0
+    )
+
+
+retrieved_ids = [2, 4, 5, 8, 10]
+relevant_ids = [2, 5, 8]
+
+print("Evaluation Results")
+print("------------------")
+
+for k in [1, 3, 5]:
+
+    precision = precision_at_k(
+        retrieved_ids,
+        relevant_ids,
+        k
+    )
+
+    recall = recall_at_k(
+        retrieved_ids,
+        relevant_ids,
+        k
+    )
+
+    print()
+    print(f"K = {k}")
+    print(f"Precision: {precision:.2f}")
+    print(f"Recall: {recall:.2f}")
+
+Expected:
+
+Evaluation Results
+------------------
+
+K = 1
+Precision: 1.00
+Recall: 0.33
+
+K = 3
+Precision: 0.67
+Recall: 0.67
+
+K = 5
+Precision: 0.60
+Recall: 1.00
+What happened?
+
+As K increases:
+
+K=1
+Recall = 0.33
+
+      ↓
+
+K=3
+Recall = 0.67
+
+      ↓
+
+K=5
+Recall = 1.00
+Important rule
+
+Generally, Recall@K cannot decrease when you increase K if you're simply taking the top-K prefix of the same ranked retrieval list.
+
+Why?
+
+Because you're giving the retriever more opportunities to find relevant documents.
+
+But precision can decrease because you're also adding potentially irrelevant documents.
+
+37. ⭐⭐⭐ AI Engineer Challenge
+
+Now we move from toy examples to your Research Proposal AI.
+
+Your evaluation dataset should eventually look like this:
+
+Question
+    ↓
+Expected evidence
+    ↓
+Retriever
+    ↓
+Retrieved pages
+    ↓
+Compare retrieved vs expected
+
+A good starting dataset could be:
+
+evaluation_questions = [
+    {
+        "question": "What methodology is proposed?",
+        "relevant_pages": [12, 13],
+        "expected_information": "Transformer-based model"
+    },
+
+    {
+        "question": "What is the main objective of the proposal?",
+        "relevant_pages": [2],
+        "expected_information": "Development of the proposed research system"
+    },
+
+    {
+        "question": "What problem does the proposed research address?",
+        "relevant_pages": [2, 3],
+        "expected_information": "The specific research problem identified by the proposal"
+    },
+
+    {
+        "question": "What datasets will be used?",
+        "relevant_pages": [14, 15],
+        "expected_information": "Datasets identified in the proposed methodology"
+    },
+
+    {
+        "question": "What machine learning model is proposed?",
+        "relevant_pages": [12, 13],
+        "expected_information": "The ML/DL architecture specified in the proposal"
+    },
+
+    {
+        "question": "What is the proposed research timeline?",
+        "relevant_pages": [20, 21],
+        "expected_information": "Milestones and activities across the project duration"
+    },
+
+    {
+        "question": "What is the total proposed budget?",
+        "relevant_pages": [16],
+        "expected_information": "Total budget requested in the proposal"
+    },
+
+    {
+        "question": "What are the major budget components?",
+        "relevant_pages": [16, 17],
+        "expected_information": "Major expenditure categories in the proposed budget"
+    },
+
+    {
+        "question": "What are the expected outcomes of the project?",
+        "relevant_pages": [18, 19],
+        "expected_information": "Expected scientific/technical outcomes"
+    },
+
+    {
+        "question": "Who are the investigators involved in the proposal?",
+        "relevant_pages": [1, 2],
+        "expected_information": "Principal investigator and other investigators"
+    }
+]
+Important correction for your real project
+
+Don't blindly use these page numbers.
+
+The page numbers above are dataset structure examples, not verified ground truth for your particular proposal.
+
+For your actual Research Proposal AI, you should manually inspect the proposal and establish:
+
+question
+    ↓
+correct page(s)
+    ↓
+correct expected answer/information
+
+That manually verified information becomes your ground truth.
+
+Recommended dataset structure
+
+For your project, I'd eventually make:
+
+data/
+└── evaluation/
+    └── rag_evaluation.json
+
+Example:
+
+[
+  {
+    "id": 1,
+    "question": "What methodology is proposed?",
+    "relevant_pages": [12, 13],
+    "expected_information": "Transformer-based model"
+  },
+  {
+    "id": 2,
+    "question": "What is the total proposed budget?",
+    "relevant_pages": [16],
+    "expected_information": "Total budget requested in the proposal"
+  }
+]
+
+Later you can expand this to:
+
+{
+  "id": 1,
+  "question": "...",
+  "relevant_pages": [12, 13],
+  "expected_information": "...",
+  "difficulty": "medium",
+  "category": "methodology"
+}
+
+And eventually:
+
+20 questions
+50 questions
+100 questions
+
+That becomes a genuine evaluation benchmark for your application.
+
+38. 🧠 Day 6 Questions — Answers
+1. Why can a RAG answer sound correct even when retrieval is poor?
+
+Because an LLM has knowledge and language-generation ability independent of the retrieved context.
+
+For example:
+
+Question
+   ↓
+Poor retrieval
+   ↓
+LLM already knows something similar
+   ↓
+Fluent answer
+
+The answer can therefore sound convincing while not being grounded in the retrieved evidence.
+
+This is one reason fluency ≠ correctness.
+
+2. What is ground truth?
+
+Ground truth is the verified correct information against which we evaluate our system.
+
+For retrieval:
+
+Question
+   ↓
+Expected relevant pages
+
+For generation:
+
+Question
+   ↓
+Expected answer
+
+Example:
+
+{
+    "question": "What methodology is proposed?",
+    "relevant_pages": [12, 13]
+}
+
+Those pages represent retrieval ground truth.
+
+3. What does Precision measure?
+
+Precision measures:
+
+Of the documents I retrieved, how many were actually relevant?
+
+Formula:
+
+Precision =
+Relevant Retrieved
+────────────────
+Total Retrieved
+
+High precision:
+
+Retrieved:
+[relevant, relevant, relevant]
+
+Low precision:
+
+Retrieved:
+[relevant, irrelevant, irrelevant, irrelevant]
+4. What does Recall measure?
+
+Recall asks:
+
+Of all the relevant documents that exist, how many did I retrieve?
+
+Recall =
+Relevant Retrieved
+─────────────────
+Total Relevant
+
+High recall means the retriever is finding most of the useful evidence.
+
+5. What is Precision@K?
+
+Precision@K measures precision using only the top K retrieved results.
+
+For example:
+
+Retrieved:
+
+1 → relevant
+2 → irrelevant
+3 → relevant
+4 → irrelevant
+5 → relevant
+
+At K=3:
+
+[relevant, irrelevant, relevant]
+
+Therefore:
+
+Precision@3 = 2/3
+6. What is Recall@K?
+
+Recall@K measures how many of the relevant documents are found within the top K results.
+
+Example:
+
+Relevant documents:
+[2, 5, 8]
+
+Retrieved:
+
+[2, 4, 5]
+
+At K=3:
+
+2 relevant found
+3 relevant exist
+
+Therefore:
+
+Recall@3 = 2/3
+7. What does MRR measure?
+
+MRR = Mean Reciprocal Rank
+
+It focuses on where the first relevant result appears.
+
+If the first relevant result is:
+
+Rank 1 → 1/1 = 1.0
+
+Rank 2 → 1/2 = 0.5
+
+Rank 3 → 1/3 = 0.333
+
+Rank 5 → 1/5 = 0.2
+
+For multiple questions:
+
+MRR = average of reciprocal ranks
+
+MRR is particularly useful when you care about getting a useful result very early.
+
+8. Why does increasing K sometimes introduce noise?
+
+Suppose:
+
+K = 3
+
+1. relevant
+2. relevant
+3. relevant
+
+Great.
+
+But:
+
+K = 10
+
+1. relevant
+2. relevant
+3. relevant
+4. irrelevant
+5. irrelevant
+6. irrelevant
+7. irrelevant
+8. irrelevant
+9. irrelevant
+10. irrelevant
+
+The additional documents may contain:
+
+unrelated information
+conflicting information
+duplicate information
+distracting context
+incorrect evidence
+
+The LLM now has more context to process.
+
+So:
+
+More retrieval
+      ≠
+Better retrieval
+9. Retrieval failure vs generation failure
+
+This distinction is extremely important for your project.
+
+Retrieval failure
+
+The correct evidence was not retrieved.
+
+Question
+   ↓
+Retriever
+   ↓
+❌ Correct page missing
+
+Even an excellent LLM may struggle because the required evidence isn't in its context.
+
+Generation failure
+
+The correct evidence was retrieved, but the LLM failed to use it correctly.
+
+Question
+   ↓
+Retriever
+   ↓
+✅ Correct evidence
+   ↓
+LLM
+   ↓
+❌ Incorrect answer
+
+Then you investigate:
+
+prompt
+context formatting
+model
+temperature
+instructions
+answer extraction
+citation handling
+10. What is faithfulness in RAG?
+
+Faithfulness asks:
+
+Is the generated answer actually supported by the retrieved evidence?
+
+Example:
+
+Retrieved context:
+
+The proposed model uses a CNN.
+
+Answer:
+
+The proposal uses a Transformer.
+
+The answer might sound plausible, but it isn't supported by the retrieved evidence.
+
+That's a faithfulness problem.
+
+11. What is answer relevance?
+
+Answer relevance asks:
+
+Does the generated answer actually address the user's question?
+
+Question:
+
+What is the proposed budget?
+
+Answer:
+
+The project uses deep learning for image classification.
+
+Even if that statement is factually true, it doesn't answer the question.
+
+Therefore:
+
+Faithfulness ≠ Answer relevance
+
+They measure different things.
+
+12. Why should Research Proposal AI have an evaluation dataset?
+
+Because otherwise you don't have a reliable way to answer:
+
+Did the system improve?
+
+Suppose you change:
+
+chunk_size
+
+from:
+
+500 → 800
+
+The system feels better.
+
+But is it actually better?
+
+Without evaluation data:
+
+"I think it improved."
+
+With evaluation data:
+
+Recall@5:
+0.71 → 0.84
+
+MRR:
+0.62 → 0.76
+
+Now you have measurable evidence.
+
+13. Why change one retrieval parameter at a time?
+
+Suppose you change simultaneously:
+
+chunk size
+embedding model
+top_k
+overlap
+reranker
+
+and performance changes.
+
+You don't know which change caused it.
+
+Instead:
+
+Experiment 1
+chunk_size = 500
+
+Measure.
+
+Then:
+
+Experiment 2
+chunk_size = 800
+
+Measure.
+
+Then:
+
+Experiment 3
+top_k = 5
+
+Measure.
+
+This is controlled experimentation.
+
+14. How could you evaluate referee retrieval?
+
+This connects directly to the referee-selection component you're building.
+
+Suppose a proposal requires:
+
+Computer Vision
+Deep Learning
+Medical Imaging
+
+Your referee retrieval system returns:
+
+Referee A → Medical Imaging
+Referee B → NLP
+Referee C → Computer Vision
+Referee D → Deep Learning
+
+You need a ground-truth/reference set of appropriate experts.
+
+Then evaluate:
+
+Question/proposal
+       ↓
+Required expertise
+       ↓
+Expected referee pool
+       ↓
+Retrieved referee pool
+
+You could measure:
+
+Expertise retrieval
+Precision@K
+Recall@K
+MRR
+Conflict-of-interest filtering
+
+You should separately verify:
+
+Retrieved referee
+       ↓
+COI check
+       ↓
+Eligible / excluded
+
+And importantly, because your system is intended for research administration, human review should remain part of the final referee-selection workflow rather than treating automated matching as the final decision.
+
+🎯 Your Day 6 mental model
+
+You should now think about your Research Proposal AI like this:
+
+                   USER QUESTION
+                         │
+                         ▼
+                   RETRIEVER
+                         │
+             ┌───────────┴───────────┐
+             ▼                       ▼
+       Correct evidence?        Wrong evidence?
+             │                       │
+             ▼                       ▼
+          YES                      RETRIEVAL
+             │                       FAILURE
+             ▼
+            LLM
+             │
+       ┌─────┴─────┐
+       ▼           ▼
+   Relevant?   Faithful?
+       │           │
+       └─────┬─────┘
+             ▼
+          ANSWER
+
+And your evaluation layer becomes:
+
+                 RAG SYSTEM
+                     │
+        ┌────────────┼────────────┐
+        ▼            ▼            ▼
+   Retrieval      Context      Generation
+        │            │            │
+        ▼            ▼            ▼
+   Precision      Relevance    Relevance
+   Recall         Coverage      Faithfulness
+   MRR
+The most important debugging sequence
+
+When your Research Proposal AI produces a wrong answer:
+
+WRONG ANSWER
+     │
+     ▼
+Were the correct pages retrieved?
+     │
+ ┌───┴────┐
+ NO       YES
+ │         │
+ ▼         ▼
+Fix      Investigate
+retrieval generation
+
+Don't immediately change the LLM prompt when the real problem is that the retriever never found the correct page.
