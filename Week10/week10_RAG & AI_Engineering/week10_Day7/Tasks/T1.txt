@@ -1,0 +1,276 @@
+1. What is the complete RAG pipeline?
+RAG stands for Retrieval-Augmented Generation. It retrieves relevant information from a knowledge base and provides that information to an LLM to generate an evidence-based answer.
+Documents (PDF / TXT)
+
+Text extraction and cleaning
+Chunking → Embeddings
+Vector database / FAISS index
+
+At query time
+User question → Query embedding
+Retrieval → Threshold filtering → Top-K
+Context management → RAG prompt
+LLM → Grounded answer with sources
+
+Remember that the document-processing steps usually happen before a user asks a question. Retrieval and generation happen when the question arrives.
+2. Why do we chunk documents?
+Chunking divides a large document into smaller, meaningful pieces of text.
+For example, a 100-page research proposal could contain separate sections for the abstract, methodology, dataset, and evaluation.
+Instead of treating the whole document as one unit:
+100-page document → One large text
+
+
+we divide it into chunks:
+100-page document
+       ↓
+Chunk 1: Abstract
+Chunk 2: Research objectives
+Chunk 3: Methodology
+Chunk 4: Dataset
+Chunk 5: Evaluation
+
+
+Benefits:
+- Retrieves specific evidence instead of an entire document.
+- Improves the precision of semantic search.
+- Makes context easier to manage.
+- Helps associate evidence with page and section metadata.
+Poorly chosen chunks can lose context, so chunk size and overlap matter.
+3. Why do we embed chunks?
+An embedding converts text into a numerical vector that represents aspects of its meaning.
+For example:
+"Machine learning for disease prediction"
+                  ↓
+          Embedding model
+                  ↓
+      [0.21, -0.13, 0.78, ...]
+
+
+These vectors let us compare the semantic similarity of text, even when the wording differs.
+For instance, a question about predicting disease using AI may match a chunk discussing machine-learning-based diagnosis.
+Embeddings make semantic retrieval possible; they do not guarantee that two passages are factually equivalent.
+4. What does FAISS do?
+FAISS stands for Facebook AI Similarity Search. It is a library for efficiently searching collections of vectors.
+Imagine you have 50,000 research chunks. FAISS helps find the vectors most similar to the user's query vector.
+Query embedding
+       ↓
+   FAISS index
+       ↓
+Similar chunk vectors
+       ↓
+Chunk IDs + similarity scores
+
+
+In your current style of implementation:
+index = faiss.IndexFlatIP(dimension)index.add(embeddings)scores, indices = index.search(query_embedding, k=3)
+
+
+
+If both the stored vectors and query vector are normalized, inner-product scores correspond to cosine similarity.
+FAISS is not the LLM and does not generate answers. It searches vectors; your application uses the results to retrieve the corresponding text and metadata.
+5. Why do we embed the user query?
+The stored document chunks are represented as vectors. To compare the user's question with those chunks, we transform the question into a vector using the compatible embedding model.
+User question
+     ↓
+Embedding model
+     ↓
+Query vector
+     ↓
+Compare against stored vectors
+     ↓
+Retrieve matching chunks
+
+
+The query and document embeddings should use compatible models and preprocessing.
+Without this step, a vector-based retriever would not have the query representation it needs to perform semantic search.
+6. What does Top-K mean?
+Top-K is the maximum number of retrieved candidates selected for further processing.
+For example:
+top_k = 3
+
+
+
+The retriever selects up to three of the highest-ranked candidates.
+Chunk	Similarity
+Methodology	0.93
+Dataset	0.87
+Evaluation	0.82
+Introduction	0.67
+With top_k = 3, the first three are selected, assuming all pass any applicable threshold.
+Top-K controls the quantity of retrieved context. It does not by itself guarantee relevance.
+7. Why use a similarity threshold?
+A threshold rejects candidates whose similarity scores are below a configured minimum.
+threshold = 0.75filtered_chunks = [    chunk    for chunk in retrieved_chunks    if chunk["score"] >= threshold]
+
+
+
+If a chunk scores 0.62, it is excluded when the threshold is 0.75.
+This helps prevent weak matches from entering the prompt.
+Important: A score of 0.75 is not a universal measure of correctness. Score distributions depend on the embedding model, dataset, and similarity method. Thresholds should be calibrated using evaluation data.
+If no chunks pass the threshold, the system should be able to say that insufficient relevant evidence was found rather than blindly generating an answer.
+8. Why do we need context management?
+Context management controls what information is sent to the LLM.
+It includes:
+- Filtering irrelevant chunks.
+- Sorting and selecting useful evidence.
+- Removing duplicate or redundant passages.
+- Managing token limits.
+- Preserving important details and source metadata.
+- Compressing context when necessary.
+Example:
+20 retrieved chunks
+       ↓
+Filter low-similarity chunks
+       ↓
+Remove duplicates
+       ↓
+Select useful evidence
+       ↓
+Fit within token budget
+       ↓
+Final context
+
+
+Too little context can omit essential facts. Too much can introduce irrelevant information, increase cost and latency, or exceed the model's context window.
+9. What is the role of the RAG prompt?
+The RAG prompt tells the LLM what to do with the retrieved evidence.
+A good prompt typically includes the user's question, the retrieved context, instructions about evidence, and the expected response format.
+Example:
+prompt = f"""You are a research proposal analysis assistant.Answer the question using only the supplied context.If the context does not contain enough evidence,state that the information is insufficient.Do not invent facts.Context:{context}Question:{question}Provide a clear answer and identify the supporting sources."""
+
+
+
+The prompt guides the model's behavior. It cannot guarantee that the model will always follow the instructions, so outputs still need evaluation.
+10. What is grounding?
+Grounding means connecting the generated answer to the evidence available to the system.
+Example:
+Retrieved evidence: The proposal states that the experiment will use 500 samples.
+Grounded answer: “The proposed experiment will use 500 samples.”
+Ungrounded answer: “The experiment will use 5,000 samples,” when that number is not supported by the evidence.
+A grounded RAG system should provide answers supported by retrieved sources, acknowledge missing evidence, and avoid inventing details.
+Grounding must be checked; simply including context in a prompt does not guarantee it.
+11. Why should we show sources?
+Showing sources helps users understand and verify where an answer came from.
+A useful source record can include:
+Source: proposal_102.pdf
+Page: 12
+Section: Methodology
+Similarity: 0.91
+
+
+Sources help with:
+- Trust and verification.
+- Debugging retrieval.
+- Reviewing research recommendations.
+- Identifying missing or incorrect evidence.
+- Auditing the system's behavior.
+For your Research Proposal AI, a recommendation should ideally explain which proposal details support the recommended referee's expertise match.
+One distinction matters: a similarity score indicates a retrieval relationship, not proof that the source supports every claim in the answer.
+12. How do you detect retrieval failure?
+Retrieval failure occurs when the system does not retrieve the evidence needed to answer the question.
+Useful warning signs include:
+1. No documents or chunks loaded.
+2. No results returned by the retriever.
+3. All results rejected by the threshold.
+4. Low similarity scores compared with an evaluated baseline.
+5. Relevant passages missing from the retrieved results.
+6. Retrieved text unrelated to the question.
+Example:
+if not final_chunks:    print("No relevant evidence found.")
+
+
+
+In a production system, log the query, retrieved chunk IDs, scores, filtering decisions, and source metadata.
+A subtle point: high similarity scores do not prove retrieval succeeded. The top-ranked results can all be irrelevant if the correct evidence is absent from the index.
+13. How do you distinguish retrieval failure from generation failure?
+Inspect the retrieved evidence before judging the final answer.
+Retrieval failure
+The necessary evidence was not retrieved, or the retrieved evidence was irrelevant.
+Remedies: Improve chunking, embeddings, metadata filters, search strategy, or threshold calibration.
+
+
+Generation failure
+The necessary evidence was retrieved, but the LLM misinterpreted it, ignored it, or invented unsupported details.
+Remedies: Improve the prompt, context organization, output validation, or model choice.
+
+
+Example:
+- Question: What dataset is proposed?
+- Correct evidence exists in the PDF.
+- Retriever returns unrelated methodology chunks: likely retrieval failure.
+- Retriever returns the dataset description, but the LLM names the wrong dataset: likely generation failure.
+Both can happen together. Diagnose them separately by checking retrieval quality and answer quality independently.
+14. Why do we evaluate RAG systems?
+Because a program running without errors does not mean it produces reliable answers.
+RAG evaluation checks different stages:
+Evaluation area	What to measure
+Retrieval	Whether relevant evidence is retrieved
+Ranking	Whether the best evidence appears near the top
+Answer correctness	Whether the response is factually correct
+Groundedness	Whether claims are supported by evidence
+Citation quality	Whether sources actually support the claims
+Performance	Latency, token usage, and cost
+Robustness	Behavior with missing, ambiguous, or misleading evidence
+For example, you could test 50 research questions with known supporting pages and measure how often the correct passages appear in the top three results.
+You should also test what happens when no relevant evidence exists.
+
+15. How would this architecture change for your Research Proposal AI?
+Your Research Proposal AI needs more than a generic question-answering chatbot. It must process research proposals, extract structured fields, recommend suitable referees, and explain those recommendations with evidence.
+A. Proposal processing and analysis
+Proposal PDF upload
+PDF text extraction / OCR
+Text cleaning and section-aware chunking
+Embeddings + vector index + metadata
+Structured proposal extraction
+Title, research domain, objectives, methodology, duration, budget and keywords
+
+Structured extraction and semantic retrieval are complementary: extraction produces fields for filtering and business logic, while retrieval finds supporting passages.
+B. Referee matching
+Proposal
+Domain, methods, keywords
+
+
+Referee database
+Expertise, designation, publications
+
+
+
+Semantic retrieval and candidate ranking
+Eligibility and conflict-of-interest checks
+Ranked referees + supporting evidence
+LLM-generated explanation with sources
+
+Your referee-ranking system should combine several signals:
+- Semantic similarity between proposal and referee expertise.
+- Research-domain and methodology compatibility.
+- Relevant publications and keywords.
+- Verified designation and seniority, where relevant to eligibility rules.
+- Institutional or program-specific restrictions.
+- Conflict-of-interest rules.
+A high similarity score alone must not override a disqualifying eligibility rule.
+C. Production architecture
+Given your existing FastAPI project, a sensible architecture is:
+Component	Responsibility
+FastAPI	Upload and analysis endpoints
+PDF/OCR service	Extract text from scanned and digital PDFs
+Cleaning and chunking service	Prepare evidence with page/section metadata
+Embedding service	Generate document and query vectors
+FAISS or vector database	Retrieve semantically relevant passages
+Proposal extraction service	Extract structured proposal fields
+Referee matching service	Retrieve and rank candidates
+Rules service	Apply eligibility and conflict checks
+LLM service	Explain findings using supplied evidence
+Evaluation and logging	Measure quality and diagnose failures
+Keep the embedding and LLM providers replaceable, so you can continue with local embeddings and add API-based providers later without rewriting the whole application.
+Final revision checklist
+Test your understanding
+0 of 7
+
+[ ] What is the difference between retrieval and generation?
+[ ] Why are chunks embedded instead of searching only raw text?
+[ ] How does FAISS find similar vectors?
+[ ] Why can a threshold remove every retrieved chunk?
+[ ] Why does a high similarity score not guarantee correctness?
+[ ] How do you tell retrieval failure from generation failure?
+[ ] How would you justify a referee recommendation with evidence?
+Tick a question after you can explain the answer without looking at your notes.
